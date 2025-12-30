@@ -361,6 +361,10 @@
   overflow: hidden; /* Ensure image stays within border radius */
 }
 
+.avatar i {
+  font-size: 1.25em;
+}
+
 .avatar img {
   width: 100%;
   height: 100%;
