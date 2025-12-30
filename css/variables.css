@@ -4,10 +4,10 @@
 
 :root {
   /* ===== Color Palette - Dark Mode (Default) ===== */
-  --bg-primary: #1A1D2E;
-  --bg-secondary: #22263A;
-  --bg-tertiary: #2A2F45;
-  --bg-elevated: #333854;
+  --bg-primary: #0A0A0B;
+  --bg-secondary: #141416;
+  --bg-tertiary: #1C1C1F;
+  --bg-elevated: #242428;
   
   /* Accent Colors - Blue Theme */
   --accent-blue: #4F7CFF;
@@ -54,7 +54,7 @@
   --heatmap-neutral: #4B5563;
   
   /* Border Colors */
-  --border-default: #333854;
+  --border-default: #2A2A2E;
   --border-subtle: rgba(255, 255, 255, 0.06);
   --border-accent: rgba(79, 124, 255, 0.4);
   
@@ -64,8 +64,8 @@
   --card-border: var(--border-subtle);
   
   /* ===== Typography ===== */
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   
   /* Font Sizes */
@@ -103,12 +103,12 @@
   --space-12: 3rem;     /* 48px */
   --space-16: 4rem;     /* 64px */
   
-  /* ===== Border Radius ===== */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
+  /* ===== Border Radius (2% rounded corners) ===== */
+  --radius-sm: 2%;
+  --radius-md: 2%;
+  --radius-lg: 2%;
+  --radius-xl: 2%;
+  --radius-2xl: 2%;
   --radius-full: 9999px;
   
   /* ===== Shadows ===== */
@@ -154,7 +154,7 @@
   
   --border-default: #E5E5E5;
   --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-accent: rgba(172, 113, 206, 0.4);
+  --border-accent: rgba(79, 124, 255, 0.4);
   
   --card-bg: var(--bg-secondary);
   --card-hover: var(--bg-tertiary);
