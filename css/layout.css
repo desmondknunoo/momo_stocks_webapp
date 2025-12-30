@@ -47,7 +47,7 @@
 .sidebar-logo-icon svg {
   width: 24px;
   height: 24px;
-  color: var(--text-primary);
+  color: #fff; /* Always white inside the colored logo box */
 }
 
 .sidebar-logo-text {
@@ -85,6 +85,10 @@
   color: var(--text-secondary);
 }
 
+.nav-item:hover svg {
+  color: var(--text-secondary);
+}
+
 .nav-item.active {
   background-color: rgba(30, 58, 138, 0.2);
   color: var(--accent-blue);
@@ -94,6 +98,8 @@
   width: 22px;
   height: 22px;
   flex-shrink: 0;
+  color: var(--icon-color);
+  transition: color var(--transition-fast);
 }
 
 .nav-item-label {
@@ -189,7 +195,7 @@
 
 .hamburger-btn i {
   font-size: 20px;
-  color: var(--text-primary);
+  color: var(--icon-color);
   transition: color var(--transition-fast);
 }
 
@@ -532,6 +538,8 @@
   font-size: 18px;
   width: 22px;
   text-align: center;
+  color: var(--icon-color);
+  transition: color var(--transition-fast);
 }
 
 /* ===== Print Styles ===== */

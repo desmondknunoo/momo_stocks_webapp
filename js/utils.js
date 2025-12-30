@@ -96,24 +96,7 @@ function getStockInitials(name) {
 }
 
 function getStockColor(name) {
-  // Generate consistent color based on stock name
-  const colors = [
-    'linear-gradient(135deg, #AC71CE 0%, #A598F9 100%)',
-    'linear-gradient(135deg, #00C853 0%, #69F0AE 100%)',
-    'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)',
-    'linear-gradient(135deg, #4ECDC4 0%, #556270 100%)',
-    'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)',
-    'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)',
-    'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)',
-    'linear-gradient(135deg, #43E97B 0%, #38F9D7 100%)'
-  ];
-
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  return colors[Math.abs(hash) % colors.length];
+  return 'var(--bg-tertiary)';
 }
 
 // ===== DOM Helpers =====

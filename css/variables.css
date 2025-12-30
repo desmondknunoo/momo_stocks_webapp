@@ -9,6 +9,9 @@
   --bg-tertiary: #1f2937; /* Neutral Gray 800 (was blue-tinted) */
   --bg-elevated: #374151; /* Neutral Gray 700 (was blue-tinted) */
   
+  /* Icon Colors */
+  --icon-color: #9ca3af; /* Light Grey (Gray 400) for Dark Mode */
+  
   /* Primary Brand Colors (Blue) - hsl(217, 91%, X%) */
   --primary-50: hsl(217, 91%, 95%);
   --primary-100: hsl(217, 91%, 90%);
@@ -163,6 +166,9 @@
   --bg-secondary: hsl(0, 0%, 100%);
   --bg-tertiary: hsl(210, 40%, 96.1%);
   --bg-elevated: hsl(0, 0%, 100%);
+  
+  /* Icon Colors */
+  --icon-color: #4b5563; /* Dark Grey (Gray 600) for Light Mode */
   
   --text-primary: hsl(222.2, 84%, 4.9%);
   --text-secondary: #666666;
