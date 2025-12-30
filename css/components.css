@@ -26,7 +26,7 @@
 
 .card-accent {
   border-color: var(--border-accent);
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(30, 58, 138, 0.1) 100%);
+  background-color: var(--card-bg);
 }
 
 .card-header {
@@ -67,9 +67,9 @@
 }
 
 .btn-primary {
-  background: var(--accent-gradient);
+  background-color: var(--primary-400);
   color: var(--text-primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
@@ -308,11 +308,11 @@
   width: 48px;
   height: 48px;
   border-radius: var(--radius-md);
-  background: var(--accent-gradient);
+  background-color: var(--primary-400);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: var(--font-bold);
   font-size: var(--text-lg);
   color: var(--text-primary);
@@ -351,7 +351,7 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background: var(--accent-gradient);
+  background-color: var(--primary-400);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -503,7 +503,7 @@
 
 .progress-bar {
   height: 100%;
-  background: var(--accent-gradient);
+  background-color: var(--primary-400);
   border-radius: var(--radius-full);
   transition: width var(--transition-slow);
 }
@@ -541,7 +541,7 @@
 
 /* ===== AI Insight Card ===== */
 .ai-insight {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.1) 100%);
+  background-color: var(--bg-tertiary);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
@@ -550,14 +550,7 @@
 }
 
 .ai-insight::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(30, 58, 138, 0.15) 0%, transparent 70%);
-  animation: pulse-glow 3s ease-in-out infinite;
+  display: none;
 }
 
 .ai-insight-header {
@@ -626,6 +619,31 @@
 
 .market-status.closed .market-status-dot {
   background-color: var(--error);
+}
+
+/* Market Status Card - Mobile Responsive */
+.market-status-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .market-status-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  
+  .market-status-card > div {
+    text-align: center;
+  }
+  
+  .market-status-card .market-status {
+    justify-content: center;
+  }
 }
 
 /* ===== View Mode Toggle ===== */

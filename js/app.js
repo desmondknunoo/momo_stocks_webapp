@@ -433,6 +433,7 @@ const App = {
           </div>
           <div>
             <div class="text-lg font-bold">${topPerformer.symbol}</div>
+            <div class="text-xs text-muted font-bold truncate" style="max-width: 150px;">${topPerformer.name !== topPerformer.symbol ? topPerformer.name : ''}</div>
             <div class="text-muted text-sm">Vol: ${abbreviateNumber(topPerformer.volume)}</div>
           </div>
           <div class="text-right ml-auto">
@@ -513,7 +514,7 @@ const App = {
           </div>
           <div>
             <div class="stock-name">${stock.symbol}</div>
-            <div class="stock-volume">Vol: ${abbreviateNumber(stock.volume || 0)}</div>
+            <div class="stock-fullname text-muted text-xs truncate" style="max-width: 140px;">${stock.name !== stock.symbol ? stock.name : ''}</div>
           </div>
         </div>
         <div class="stock-price-section">
@@ -715,6 +716,7 @@ const App = {
           </div>
           <div>
             <div class="stock-name">${stock.symbol}</div>
+            <div class="stock-fullname text-muted text-xs truncate" style="max-width: 120px;">${stock.name !== stock.symbol ? stock.name : ''}</div>
           </div>
         </div>
         <div class="stock-price-section">
@@ -757,6 +759,7 @@ const App = {
           </div>
           <div>
             <div class="font-bold text-lg">${stock.symbol}</div>
+            <div class="text-xs text-muted font-bold">${stock.name !== stock.symbol ? stock.name : ''}</div>
             <div class="text-sm text-muted">GHS ${stock.price.toFixed(2)}</div>
           </div>
         </div>
@@ -1159,7 +1162,7 @@ const App = {
     const isOpen = day >= 1 && day <= 5 && hour >= 10 && hour < 15;
 
     container.innerHTML = `
-            <div class="card flex justify-between items-center">
+            <div class="card market-status-card">
                 <div>
                     <div class="text-sm text-muted mb-1">Ghana Stock Exchange</div>
                     <div class="market-status ${isOpen ? 'open' : 'closed'}">
@@ -1167,11 +1170,11 @@ const App = {
                         ${isOpen ? 'MARKET OPEN' : 'MARKET CLOSED'}
                     </div>
                 </div>
-                <div class="text-right">
+                <div>
                     <div class="text-sm text-muted mb-1">Trading Hours</div>
                     <div class="text-mono text-sm">10:00 AM - 3:00 PM GMT</div>
                 </div>
-                <div class="text-right">
+                <div>
                     <div class="text-sm text-muted mb-1">Last Update</div>
                     <div class="text-mono font-semibold" id="last-updated">${formatTime()}</div>
                 </div>
@@ -1286,7 +1289,7 @@ const App = {
           </div>
           <div class="flex-1">
             <h2 class="text-2xl font-bold">${stock.symbol}</h2>
-            ${details?.company?.fullName ? `<p class="text-muted">${details.company.fullName}</p>` : ''}
+            <p class="text-muted">${details?.company?.fullName || (stock.name !== stock.symbol ? stock.name : '')}</p>
           </div>
           <span class="badge badge-lg ${stock.isPositive ? 'badge-success' : 'badge-error'}">
             ${formatPercent(stock.changePercent)}

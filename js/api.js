@@ -91,6 +91,51 @@ async function fetchAPI(endpoint, useCache = true) {
 
 // ===== API Methods =====
 
+// Known GSE Company Names Mapping
+const COMPANY_NAMES = {
+    'ACCESS': 'Access Bank Ghana',
+    'ADS': 'AdosTV',
+    'AGA': 'AngloGold Ashanti',
+    'ALW': 'Aluworks',
+    'AYRTN': 'Ayrton Drug Man.',
+    'BOPP': 'Benso Oil Palm Plantation',
+    'CAL': 'CAL Bank',
+    'CLYD': 'Clydebeest',
+    'CMLT': 'Camelot Ghana',
+    'CPC': 'Cocoa Processing Co.',
+    'DASPHARMA': 'Daakye Trust',
+    'DIGICUT': 'Digicut',
+    'EGL': 'Enterprise Group',
+    'EGH': 'Ecobank Ghana',
+    'ETI': 'Ecobank Transnational',
+    'FML': 'Fan Milk',
+    'GCB': 'GCB Bank',
+    'GGBL': 'Guinness Ghana Breweries',
+    'GLD': 'NewGold',
+    'GOIL': 'Ghana Oil Company',
+    'GWEB': 'Golden Web',
+    'HORDS': 'Hords',
+    'IIL': 'Intravenous Infusions',
+    'MAC': 'Mega African Capital',
+    'MLC': 'Michelle',
+    'MOGL': 'Mount Olive',
+    'MTNGH': 'MTN Ghana',
+    'PACK': 'Pack',
+    'PBC': 'Produce Buying Company',
+    'PZC': 'PZ Cussons Ghana',
+    'SAMBA': 'Samba Foods',
+    'SCB': 'Standard Chartered Bank',
+    'SIC': 'SIC Insurance',
+    'SOGEGH': 'Societe Generale Ghana',
+    'SPL': 'Starwin Products',
+    'SWL': 'Sam Woode',
+    'TBL': 'Trust Bank Gambia',
+    'TOTAL': 'TotalEnergies Marketing',
+    'TRANSOL': 'Transol Solutions',
+    'TST': 'Trust',
+    'UNIL': 'Unilever Ghana'
+};
+
 /**
  * Get all live stock data
  * @returns {Promise<Array>} Array of stock objects
@@ -100,8 +145,8 @@ async function getLiveStocks() {
 
     // Transform and enrich data
     return data.map(stock => ({
-        symbol: stock.name,
-        name: stock.name,
+        symbol: stock.name, // API returns symbol in 'name' field
+        name: COMPANY_NAMES[stock.name] || stock.name, // Use mapped name or fallback to symbol
         price: stock.price,
         change: stock.change,
         volume: stock.volume,
