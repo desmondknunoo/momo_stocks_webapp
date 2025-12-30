@@ -136,29 +136,57 @@ const App = {
 
   // ===== Theme Toggle =====
   setupThemeToggle() {
+    // Desktop sidebar toggle
     const toggleBtn = document.getElementById('theme-toggle');
     if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-        Store.toggleTheme();
-        this.updateThemeIcon();
-      });
+      toggleBtn.addEventListener('click', () => this.toggleTheme());
     }
-    this.updateThemeIcon();
+
+    // Mobile header toggle
+    const mobileToggle = document.getElementById('mobile-theme-toggle');
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', () => this.toggleTheme());
+    }
+
+    // Settings modal toggle
+    const settingsToggle = document.getElementById('settings-theme-toggle');
+    if (settingsToggle) {
+      settingsToggle.addEventListener('click', () => this.toggleTheme());
+    }
+
+    // Initialize theme icons based on current theme
+    this.updateThemeUI();
   },
 
-  updateThemeIcon() {
-    const icon = document.querySelector('#theme-toggle svg');
-    const label = document.querySelector('#theme-toggle .theme-toggle-label span');
-    const state = Store.getState();
+  toggleTheme() {
+    Store.toggleTheme();
+    this.updateThemeUI();
+  },
 
-    if (icon) {
-      icon.innerHTML = state.theme === 'dark'
-        ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
-        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-    }
-    if (label) {
-      label.textContent = state.theme === 'dark' ? 'Dark Mode' : 'Light Mode';
-    }
+  updateThemeUI() {
+    const state = Store.getState();
+    const isDark = state.theme === 'dark';
+
+    // Update sidebar toggle
+    const toggle = document.querySelector('#theme-toggle .toggle');
+    const themeLabel = document.getElementById('theme-label');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    const moonIcon = document.getElementById('theme-icon-moon');
+
+    if (toggle) toggle.classList.toggle('active', isDark);
+    if (themeLabel) themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    if (sunIcon) sunIcon.style.display = isDark ? 'none' : 'inline';
+    if (moonIcon) moonIcon.style.display = isDark ? 'inline' : 'none';
+
+    // Update mobile toggle
+    const mobileSun = document.getElementById('mobile-theme-icon-sun');
+    const mobileMoon = document.getElementById('mobile-theme-icon-moon');
+    if (mobileSun) mobileSun.style.display = isDark ? 'none' : 'inline';
+    if (mobileMoon) mobileMoon.style.display = isDark ? 'inline' : 'none';
+
+    // Update settings toggle
+    const settingsToggle = document.getElementById('settings-toggle');
+    if (settingsToggle) settingsToggle.classList.toggle('active', isDark);
   },
 
   // ===== Modals =====
@@ -194,6 +222,20 @@ const App = {
     if (modal) {
       modal.classList.remove('active');
       document.body.style.overflow = '';
+    }
+  },
+
+  // ===== Logout Handler =====
+  handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+      // Clear local storage
+      localStorage.clear();
+      // Close profile modal
+      this.closeModal('profile-modal');
+      // Show toast
+      this.showToast('Logged out successfully', 'info');
+      // Reload page after brief delay
+      setTimeout(() => window.location.reload(), 1000);
     }
   },
 
