@@ -6,8 +6,8 @@
   /* ===== Color Palette - Dark Mode (Default) ===== */
   --bg-primary: #030711;
   --bg-secondary: #0a0f1a;
-  --bg-tertiary: hsl(217.2, 32.6%, 17.5%);
-  --bg-elevated: hsl(217.2, 32.6%, 20%);
+  --bg-tertiary: #1f2937; /* Neutral Gray 800 (was blue-tinted) */
+  --bg-elevated: #374151; /* Neutral Gray 700 (was blue-tinted) */
   
   /* Primary Brand Colors (Blue) - hsl(217, 91%, X%) */
   --primary-50: hsl(217, 91%, 95%);
