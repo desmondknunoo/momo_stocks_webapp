@@ -452,6 +452,7 @@
     flex-wrap: wrap;
     overflow-x: visible;
     gap: var(--space-3);
+    padding-bottom: 0;
   }
   
   /* Index cards stack vertically on mobile */
@@ -469,11 +470,12 @@
   /* Bottom nav spacing fix */
   .bottom-nav {
     justify-content: space-between;
-    padding: 0 4px;
+    padding: 4px;
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
   }
   
   .bottom-nav-item {
-    padding: var(--space-2) 0;
+    padding: 4px 0;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -481,17 +483,18 @@
     justify-content: center;
     max-width: none;
     min-width: 0;
+    gap: 2px;
   }
   
   .bottom-nav-item i {
-    font-size: 20px;
-    margin-bottom: 3px;
+    font-size: 18px;
+    margin-bottom: 0;
     display: block;
   }
   
   .bottom-nav-item span {
-    font-size: 9px;
-    line-height: 1.1;
+    font-size: 10px;
+    line-height: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
