@@ -9,11 +9,18 @@
   --bg-tertiary: #1C1C1F;
   --bg-elevated: #242428;
   
-  /* Accent Colors - Blue Theme */
-  --accent-blue: #4F7CFF;
-  --accent-blue-soft: #6B94FF;
-  --accent-blue-glow: rgba(79, 124, 255, 0.3);
-  --accent-gradient: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-soft) 100%);
+  /* Accent Colors - Dark Blue Primary */
+  --accent-blue: #1E3A8A;
+  --accent-blue-soft: #1E40AF;
+  --accent-blue-glow: rgba(30, 58, 138, 0.4);
+  
+  /* Secondary Color - Dark Red */
+  --accent-red: #991B1B;
+  --accent-red-soft: #7F1D1D;
+  --accent-red-glow: rgba(153, 27, 27, 0.4);
+  
+  /* Gradient - Dark Blue to Dark Red */
+  --accent-gradient: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-red) 100%);
   
   /* Legacy purple aliases (for backward compatibility) */
   --accent-purple: var(--accent-blue);

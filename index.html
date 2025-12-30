@@ -228,8 +228,11 @@
 
 <body>
   <div class="app">
-    <!-- ===== Sidebar Navigation (Desktop) ===== -->
-    <aside class="sidebar">
+    <!-- ===== Sidebar Overlay (Mobile) ===== -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ===== Sidebar Navigation ===== -->
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-title">Menu</div>
       </div>
@@ -277,6 +280,10 @@
     <main class="main">
       <!-- Header -->
       <header class="main-header">
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-btn" id="hamburger-btn" title="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
         <h1 class="main-header-title" id="header-title">Dashboard</h1>
         <div class="main-header-actions">
           <!-- Mobile Theme Toggle -->
@@ -672,35 +679,6 @@
       </div>
     </main>
 
-    <!-- ===== Bottom Navigation (Mobile) ===== -->
-    <nav class="bottom-nav">
-      <div class="bottom-nav-inner">
-        <div class="bottom-nav-item active" data-screen="dashboard">
-          <i class="fa-solid fa-house"></i>
-          <span>Home</span>
-        </div>
-
-        <div class="bottom-nav-item" data-screen="market">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>Market</span>
-        </div>
-
-        <div class="bottom-nav-item" data-screen="portfolio">
-          <i class="fa-solid fa-wallet"></i>
-          <span>Portfolio</span>
-        </div>
-
-        <div class="bottom-nav-item" data-screen="trading">
-          <i class="fa-solid fa-arrow-right-arrow-left"></i>
-          <span>Trade</span>
-        </div>
-
-        <div class="bottom-nav-item" data-screen="gse-live">
-          <i class="fa-solid fa-tower-broadcast"></i>
-          <span>Live</span>
-        </div>
-      </div>
-    </nav>
   </div>
 
   <!-- ===== Stock Detail Modal ===== -->
@@ -800,6 +778,58 @@
   <script src="js/store.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Hamburger Menu Script -->
+  <script>
+    (function () {
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const navItems = document.querySelectorAll('.sidebar .nav-item');
+
+      function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+
+      function toggleSidebar() {
+        if (sidebar.classList.contains('open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+
+      // Hamburger button click
+      hamburgerBtn.addEventListener('click', toggleSidebar);
+
+      // Close on overlay click
+      overlay.addEventListener('click', closeSidebar);
+
+      // Close sidebar when nav item is clicked (mobile)
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 1024) {
+            closeSidebar();
+          }
+        });
+      });
+
+      // Close sidebar on window resize if it becomes desktop size
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 1024) {
+          closeSidebar();
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>

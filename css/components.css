@@ -26,7 +26,7 @@
 
 .card-accent {
   border-color: var(--border-accent);
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(172, 113, 206, 0.05) 100%);
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(30, 58, 138, 0.1) 100%);
 }
 
 .card-header {
@@ -541,7 +541,7 @@
 
 /* ===== AI Insight Card ===== */
 .ai-insight {
-  background: linear-gradient(135deg, rgba(172, 113, 206, 0.1) 0%, rgba(165, 152, 249, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.1) 100%);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
@@ -556,7 +556,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(172, 113, 206, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(30, 58, 138, 0.15) 0%, transparent 70%);
   animation: pulse-glow 3s ease-in-out infinite;
 }
 

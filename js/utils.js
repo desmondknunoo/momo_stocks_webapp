@@ -8,22 +8,22 @@ function formatCurrency(amount, showSign = false) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
-  
+
   if (showSign && amount !== 0) {
     return amount > 0 ? `+GHS ${formatted}` : `-GHS ${formatted}`;
   }
-  
+
   return `GHS ${formatted}`;
 }
 
 // ===== Percentage Formatting =====
 function formatPercent(value, showSign = true) {
   const formatted = Math.abs(value).toFixed(2);
-  
+
   if (showSign && value !== 0) {
     return value > 0 ? `+${formatted}%` : `-${formatted}%`;
   }
-  
+
   return `${formatted}%`;
 }
 
@@ -82,7 +82,7 @@ function getRelativeTime(date) {
   const minutes = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
-  
+
   if (minutes < 1) return 'Just now';
   if (minutes < 60) return `${minutes}m ago`;
   if (hours < 24) return `${hours}h ago`;
@@ -107,12 +107,12 @@ function getStockColor(name) {
     'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)',
     'linear-gradient(135deg, #43E97B 0%, #38F9D7 100%)'
   ];
-  
+
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   return colors[Math.abs(hash) % colors.length];
 }
 
@@ -176,7 +176,7 @@ function debounce(func, wait) {
 // ===== Throttle =====
 function throttle(func, limit) {
   let inThrottle;
-  return function(...args) {
+  return function (...args) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;

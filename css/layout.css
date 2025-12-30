@@ -86,8 +86,8 @@
 }
 
 .nav-item.active {
-  background-color: rgba(172, 113, 206, 0.15);
-  color: var(--accent-purple);
+  background-color: rgba(30, 58, 138, 0.2);
+  color: var(--accent-blue);
 }
 
 .nav-item svg {
@@ -173,50 +173,50 @@
   display: block;
 }
 
-/* ===== Bottom Navigation (Mobile) ===== */
-.bottom-nav {
+/* ===== Hamburger Menu Button ===== */
+.hamburger-btn {
   display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--bottom-nav-height);
-  background-color: var(--bg-secondary);
-  border-top: 1px solid var(--border-default);
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   z-index: var(--z-fixed);
 }
 
-.bottom-nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  height: 100%;
-  padding: 0 var(--space-2);
-}
-
-.bottom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-2);
-  color: var(--text-muted);
-  font-size: var(--text-xs);
+.hamburger-btn i {
+  font-size: 20px;
+  color: var(--text-primary);
   transition: color var(--transition-fast);
-  cursor: pointer;
 }
 
-.bottom-nav-item:hover {
-  color: var(--text-secondary);
+.hamburger-btn:hover i {
+  color: var(--accent-blue);
 }
 
-.bottom-nav-item.active {
-  color: var(--accent-purple);
+/* ===== Sidebar Overlay (Mobile) ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: calc(var(--z-sticky) - 1);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
 }
 
-.bottom-nav-item svg {
-  width: 24px;
-  height: 24px;
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ===== Bottom Navigation (Hidden - replaced by hamburger sidebar) ===== */
+.bottom-nav {
+  display: none !important;
 }
 
 /* ===== Grid Layouts ===== */
@@ -381,32 +381,32 @@
 
 /* Tablet and below */
 @media (max-width: 1024px) {
+  .hamburger-btn {
+    display: flex;
+  }
+  
   .sidebar {
     transform: translateX(-100%);
+    box-shadow: none;
   }
   
   .sidebar.open {
     transform: translateX(0);
+    box-shadow: var(--shadow-xl);
   }
   
   .main {
     margin-left: 0;
-    padding-bottom: calc(var(--bottom-nav-height) + 16px);
-  }
-  
-  .bottom-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    padding-bottom: var(--space-4);
   }
   
   .grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  /* Hide desktop theme toggle on mobile */
+  /* Show sidebar footer on mobile when sidebar is open */
   .sidebar-footer {
-    display: none;
+    display: block;
   }
 }
 
@@ -466,42 +466,6 @@
   .section {
     margin-bottom: var(--space-6);
   }
-  
-  /* Bottom nav spacing fix */
-  .bottom-nav {
-    justify-content: space-between;
-    padding: 4px;
-    padding-bottom: max(4px, env(safe-area-inset-bottom));
-  }
-  
-  .bottom-nav-item {
-    padding: 4px 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-width: none;
-    min-width: 0;
-    gap: 2px;
-  }
-  
-  .bottom-nav-item i {
-    font-size: 18px;
-    margin-bottom: 0;
-    display: block;
-  }
-  
-  .bottom-nav-item span {
-    font-size: 10px;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    text-align: center;
-    display: block;
-  }
 }
 
 /* Small mobile */
@@ -512,11 +476,6 @@
   
   .main-header {
     padding: var(--space-2) var(--space-3);
-  }
-  
-  /* Adjust bottom nav for small screens */
-  .bottom-nav {
-    padding: 0 var(--space-2);
   }
   
   .section-header {
