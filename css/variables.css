@@ -4,16 +4,21 @@
 
 :root {
   /* ===== Color Palette - Dark Mode (Default) ===== */
-  --bg-primary: #0D0D0D;
-  --bg-secondary: #1A1A1A;
-  --bg-tertiary: #242424;
-  --bg-elevated: #2C2C2C;
+  --bg-primary: #1A1D2E;
+  --bg-secondary: #22263A;
+  --bg-tertiary: #2A2F45;
+  --bg-elevated: #333854;
   
-  /* Accent Colors */
-  --accent-purple: rgb(172, 113, 206);
-  --accent-purple-soft: rgb(165, 152, 249);
-  --accent-purple-glow: rgba(172, 113, 206, 0.3);
-  --accent-gradient: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-purple-soft) 100%);
+  /* Accent Colors - Blue Theme */
+  --accent-blue: #4F7CFF;
+  --accent-blue-soft: #6B94FF;
+  --accent-blue-glow: rgba(79, 124, 255, 0.3);
+  --accent-gradient: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-soft) 100%);
+  
+  /* Legacy purple aliases (for backward compatibility) */
+  --accent-purple: var(--accent-blue);
+  --accent-purple-soft: var(--accent-blue-soft);
+  --accent-purple-glow: var(--accent-blue-glow);
   
   /* Text Colors */
   --text-primary: #FFFFFF;
@@ -49,9 +54,9 @@
   --heatmap-neutral: #4B5563;
   
   /* Border Colors */
-  --border-default: #2C2C2C;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-accent: rgba(172, 113, 206, 0.3);
+  --border-default: #333854;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(79, 124, 255, 0.4);
   
   /* Card & Surface */
   --card-bg: var(--bg-secondary);

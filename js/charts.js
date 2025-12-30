@@ -6,8 +6,8 @@
 const Charts = {
     // Color palette
     colors: {
-        primary: 'rgb(172, 113, 206)',
-        primarySoft: 'rgb(165, 152, 249)',
+        primary: '#4F7CFF',
+        primarySoft: '#6B94FF',
         success: '#00C853',
         error: '#FF1744',
         grid: 'rgba(255, 255, 255, 0.05)',
@@ -508,16 +508,26 @@ const Charts = {
             return [];
         }
 
-        // Prepare data with market cap as value (use volume * price if marketCap not available)
-        const items = stocks.map(stock => ({
-            symbol: stock.symbol,
-            name: stock.name,
-            price: stock.price || 0,
-            change: stock.change || 0,
-            changePercent: stock.changePercent || 0,
-            volume: stock.volume || 0,
-            value: stock.marketCap || (stock.volume * stock.price) || 1
-        })).sort((a, b) => b.value - a.value);
+
+        // Prepare data with balanced sizing
+        // Use a more even distribution with slight variation based on % change magnitude
+        const items = stocks.map(stock => {
+            // Base value is equal for all stocks
+            const baseValue = 100;
+            // Add slight variation based on absolute % change (0-20% bonus)
+            const changeBonus = Math.min(Math.abs(stock.changePercent || 0) * 4, 20);
+
+            return {
+                symbol: stock.symbol,
+                name: stock.name,
+                price: stock.price || 0,
+                change: stock.change || 0,
+                changePercent: stock.changePercent || 0,
+                volume: stock.volume || 0,
+                value: baseValue + changeBonus
+            };
+        }).sort((a, b) => b.changePercent - a.changePercent); // Sort by performance
+
 
         // Calculate layout
         const padding = 2;
@@ -537,7 +547,7 @@ const Charts = {
             ctx.strokeRect(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
 
             // Text (only if cell is big enough)
-            if (rect.width > 50 && rect.height > 30) {
+            if (rect.width > 45 && rect.height > 28) {
                 ctx.fillStyle = '#fff';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -546,17 +556,17 @@ const Charts = {
                 const centerY = rect.y + rect.height / 2;
 
                 // Symbol
-                ctx.font = 'bold 12px Inter';
-                ctx.fillText(rect.symbol, centerX, centerY - 8);
+                ctx.font = 'bold 11px Inter';
+                ctx.fillText(rect.symbol, centerX, centerY - 7);
 
                 // Change percent
-                ctx.font = '10px JetBrains Mono';
+                ctx.font = '9px JetBrains Mono';
                 const changeText = (rect.changePercent >= 0 ? '+' : '') + rect.changePercent.toFixed(2) + '%';
                 ctx.fillText(changeText, centerX, centerY + 8);
-            } else if (rect.width > 30 && rect.height > 20) {
+            } else if (rect.width > 25 && rect.height > 18) {
                 // Just symbol for smaller cells
                 ctx.fillStyle = '#fff';
-                ctx.font = 'bold 10px Inter';
+                ctx.font = 'bold 9px Inter';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(rect.symbol, rect.x + rect.width / 2, rect.y + rect.height / 2);
