@@ -349,6 +349,235 @@ const Charts = {
         }
 
         return { bids, asks };
+    },
+
+    /**
+     * Get heatmap color based on percent change
+     * Uses gradient from red (losses) through neutral to green (gains)
+     */
+    getHeatmapColor(changePercent) {
+        // Clamp to -5% to +5% range for color intensity
+        const clampedChange = Math.max(-5, Math.min(5, changePercent));
+        const intensity = Math.abs(clampedChange) / 5;
+
+        if (clampedChange === 0) {
+            return '#4B5563'; // Neutral gray
+        } else if (clampedChange > 0) {
+            // Green gradient based on intensity
+            if (intensity < 0.2) return '#22c55e';
+            if (intensity < 0.4) return '#16a34a';
+            if (intensity < 0.6) return '#15803d';
+            if (intensity < 0.8) return '#166534';
+            return '#14532d';
+        } else {
+            // Red gradient based on intensity
+            if (intensity < 0.2) return '#ef4444';
+            if (intensity < 0.4) return '#dc2626';
+            if (intensity < 0.6) return '#b91c1c';
+            if (intensity < 0.8) return '#991b1b';
+            return '#7f1d1d';
+        }
+    },
+
+    /**
+     * Squarified treemap layout algorithm
+     * Divides the available area into rectangles proportional to values
+     */
+    squarify(items, x, y, width, height) {
+        if (items.length === 0) return [];
+
+        const totalValue = items.reduce((sum, item) => sum + item.value, 0);
+        if (totalValue === 0) return [];
+
+        const rects = [];
+        let remaining = [...items];
+        let currentX = x;
+        let currentY = y;
+        let currentWidth = width;
+        let currentHeight = height;
+
+        while (remaining.length > 0) {
+            // Split direction based on aspect ratio
+            const horizontal = currentWidth >= currentHeight;
+
+            // Find optimal row
+            let row = [remaining[0]];
+            let rowValue = remaining[0].value;
+            let bestRatio = Infinity;
+
+            for (let i = 1; i < remaining.length; i++) {
+                const testRow = [...row, remaining[i]];
+                const testValue = rowValue + remaining[i].value;
+
+                // Calculate aspect ratios for this row configuration
+                const rowArea = (testValue / totalValue) * currentWidth * currentHeight;
+                const rowDimension = horizontal
+                    ? rowArea / currentHeight
+                    : rowArea / currentWidth;
+
+                let worstRatio = 0;
+                testRow.forEach(item => {
+                    const itemArea = (item.value / testValue) * rowArea;
+                    const itemDim = horizontal
+                        ? itemArea / rowDimension
+                        : itemArea / rowDimension;
+                    const otherDim = itemArea / itemDim;
+                    const ratio = Math.max(itemDim / otherDim, otherDim / itemDim);
+                    worstRatio = Math.max(worstRatio, ratio);
+                });
+
+                if (worstRatio < bestRatio) {
+                    bestRatio = worstRatio;
+                    row = testRow;
+                    rowValue = testValue;
+                } else {
+                    break;
+                }
+            }
+
+            // Layout the row
+            const rowFraction = rowValue / totalValue;
+            const rowSize = horizontal
+                ? rowFraction * currentWidth
+                : rowFraction * currentHeight;
+
+            let offset = 0;
+            row.forEach(item => {
+                const itemFraction = item.value / rowValue;
+                const itemSize = horizontal
+                    ? itemFraction * currentHeight
+                    : itemFraction * currentWidth;
+
+                const rect = horizontal ? {
+                    x: currentX,
+                    y: currentY + offset,
+                    width: rowSize,
+                    height: itemSize,
+                    ...item
+                } : {
+                    x: currentX + offset,
+                    y: currentY,
+                    width: itemSize,
+                    height: rowSize,
+                    ...item
+                };
+
+                rects.push(rect);
+                offset += itemSize;
+            });
+
+            // Update remaining area
+            if (horizontal) {
+                currentX += rowSize;
+                currentWidth -= rowSize;
+            } else {
+                currentY += rowSize;
+                currentHeight -= rowSize;
+            }
+
+            // Remove processed items
+            remaining = remaining.slice(row.length);
+        }
+
+        return rects;
+    },
+
+    /**
+     * Draw treemap heatmap visualization
+     * Each cell sized by market cap, colored by % change
+     */
+    treemapHeatmap(canvas, stocks, options = {}) {
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const container = canvas.parentElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        // Set canvas size
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.scale(dpr, dpr);
+
+        if (stocks.length === 0) {
+            ctx.fillStyle = '#4B5563';
+            ctx.font = '16px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('No stock data available', width / 2, height / 2);
+            return [];
+        }
+
+        // Prepare data with market cap as value (use volume * price if marketCap not available)
+        const items = stocks.map(stock => ({
+            symbol: stock.symbol,
+            name: stock.name,
+            price: stock.price || 0,
+            change: stock.change || 0,
+            changePercent: stock.changePercent || 0,
+            volume: stock.volume || 0,
+            value: stock.marketCap || (stock.volume * stock.price) || 1
+        })).sort((a, b) => b.value - a.value);
+
+        // Calculate layout
+        const padding = 2;
+        const rects = this.squarify(items, padding, padding, width - padding * 2, height - padding * 2);
+
+        // Draw cells
+        rects.forEach(rect => {
+            const color = this.getHeatmapColor(rect.changePercent);
+
+            // Fill
+            ctx.fillStyle = color;
+            ctx.fillRect(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
+
+            // Border
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
+
+            // Text (only if cell is big enough)
+            if (rect.width > 50 && rect.height > 30) {
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const centerX = rect.x + rect.width / 2;
+                const centerY = rect.y + rect.height / 2;
+
+                // Symbol
+                ctx.font = 'bold 12px Inter';
+                ctx.fillText(rect.symbol, centerX, centerY - 8);
+
+                // Change percent
+                ctx.font = '10px JetBrains Mono';
+                const changeText = (rect.changePercent >= 0 ? '+' : '') + rect.changePercent.toFixed(2) + '%';
+                ctx.fillText(changeText, centerX, centerY + 8);
+            } else if (rect.width > 30 && rect.height > 20) {
+                // Just symbol for smaller cells
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 10px Inter';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(rect.symbol, rect.x + rect.width / 2, rect.y + rect.height / 2);
+            }
+        });
+
+        // Store rects for hover/click detection
+        canvas._treemapRects = rects;
+        return rects;
+    },
+
+    /**
+     * Find rect at position for hover/click handling
+     */
+    findRectAtPosition(canvas, x, y) {
+        if (!canvas._treemapRects) return null;
+
+        return canvas._treemapRects.find(rect =>
+            x >= rect.x && x <= rect.x + rect.width &&
+            y >= rect.y && y <= rect.y + rect.height
+        );
     }
 };
 

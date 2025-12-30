@@ -31,6 +31,23 @@
   --info: #00B0FF;
   --info-bg: rgba(0, 176, 255, 0.15);
   
+  /* Heatmap Colors - Gains (Green Scale) */
+  --heatmap-green-500: #22c55e;
+  --heatmap-green-600: #16a34a;
+  --heatmap-green-700: #15803d;
+  --heatmap-green-800: #166534;
+  --heatmap-green-900: #14532d;
+  
+  /* Heatmap Colors - Losses (Red Scale) */
+  --heatmap-red-500: #ef4444;
+  --heatmap-red-600: #dc2626;
+  --heatmap-red-700: #b91c1c;
+  --heatmap-red-800: #991b1b;
+  --heatmap-red-900: #7f1d1d;
+  
+  /* Heatmap Neutral */
+  --heatmap-neutral: #4B5563;
+  
   /* Border Colors */
   --border-default: #2C2C2C;
   --border-subtle: rgba(255, 255, 255, 0.08);

@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MoMo Stocks - Trade Ghana Stock Exchange stocks with Mobile Money. Real-time GSE data, portfolio tracking, and AI-powered insights.">
+  <meta name="description"
+    content="MoMo Stocks - Trade Ghana Stock Exchange stocks with Mobile Money. Real-time GSE data, portfolio tracking, and AI-powered insights.">
   <meta name="keywords" content="Ghana Stock Exchange, GSE, stocks, trading, Mobile Money, MoMo, investment, portfolio">
   <meta name="author" content="MoMo Stocks">
   <title>MoMo Stocks | Ghana Stock Exchange Trading</title>
-  
+
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23AC71CE'/%3E%3Cstop offset='100%25' stop-color='%23A598F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='50' font-weight='bold' fill='white' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
-  
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23AC71CE'/%3E%3Cstop offset='100%25' stop-color='%23A598F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='50' font-weight='bold' fill='white' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/animations.css">
-  
+
   <!-- Additional Inline Styles -->
   <style>
     /* Toast Container */
@@ -30,7 +33,7 @@
       flex-direction: column;
       gap: 10px;
     }
-    
+
     .toast {
       display: flex;
       align-items: center;
@@ -43,29 +46,40 @@
       box-shadow: var(--shadow-lg);
       min-width: 280px;
     }
-    
-    .toast-success { border-left: 4px solid var(--success); }
-    .toast-error { border-left: 4px solid var(--error); }
-    .toast-info { border-left: 4px solid var(--accent-purple); }
-    
+
+    .toast-success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast-error {
+      border-left: 4px solid var(--error);
+    }
+
+    .toast-info {
+      border-left: 4px solid var(--accent-purple);
+    }
+
     .toast button {
       color: var(--text-muted);
       font-size: 18px;
       cursor: pointer;
     }
-    
+
     .toast button:hover {
       color: var(--text-primary);
     }
-    
+
     .animate-fade-out {
       animation: fadeOut 0.3s ease forwards;
     }
-    
+
     @keyframes fadeOut {
-      to { opacity: 0; transform: translateX(20px); }
+      to {
+        opacity: 0;
+        transform: translateX(20px);
+      }
     }
-    
+
     /* Modal Styles */
     .modal {
       display: none;
@@ -73,20 +87,20 @@
       inset: 0;
       z-index: 1000;
     }
-    
+
     .modal.active {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    
+
     .modal-backdrop {
       position: absolute;
       inset: 0;
       background-color: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(4px);
     }
-    
+
     .modal-content {
       position: relative;
       background-color: var(--bg-secondary);
@@ -99,7 +113,7 @@
       overflow-y: auto;
       animation: scaleIn 0.2s ease;
     }
-    
+
     .modal-close {
       position: absolute;
       top: 16px;
@@ -107,24 +121,24 @@
       color: var(--text-muted);
       cursor: pointer;
     }
-    
+
     .modal-close:hover {
       color: var(--text-primary);
     }
-    
+
     /* Trading Panel */
     #trading-panel {
       display: none;
     }
-    
+
     #trading-panel.active {
       display: block;
     }
-    
+
     #trading-stock-selector.hidden {
       display: none;
     }
-    
+
     /* Trade Type Tabs */
     .trade-type-tabs {
       display: flex;
@@ -134,7 +148,7 @@
       border-radius: var(--radius-lg);
       margin-bottom: var(--space-4);
     }
-    
+
     .trade-type-tabs button {
       flex: 1;
       padding: var(--space-3);
@@ -142,17 +156,17 @@
       font-weight: var(--font-semibold);
       transition: all var(--transition-fast);
     }
-    
+
     .trade-type-tabs button[data-trade-type="buy"].active {
       background-color: var(--success);
       color: #000;
     }
-    
+
     .trade-type-tabs button[data-trade-type="sell"].active {
       background-color: var(--error);
       color: #fff;
     }
-    
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .modal-content {
@@ -160,23 +174,46 @@
         padding: var(--space-4);
       }
     }
-    
+
     /* Space utility */
-    .space-y-2 > * + * { margin-top: var(--space-2); }
-    .space-y-3 > * + * { margin-top: var(--space-3); }
-    .space-y-4 > * + * { margin-top: var(--space-4); }
-    
-    .w-3 { width: 12px; }
-    .h-3 { height: 12px; }
-    
-    .ml-auto { margin-left: auto; }
-    .flex-1 { flex: 1; }
-    
-    .border-b { border-bottom: 1px solid; }
-    
-    .font-semibold { font-weight: var(--font-semibold); }
+    .space-y-2>*+* {
+      margin-top: var(--space-2);
+    }
+
+    .space-y-3>*+* {
+      margin-top: var(--space-3);
+    }
+
+    .space-y-4>*+* {
+      margin-top: var(--space-4);
+    }
+
+    .w-3 {
+      width: 12px;
+    }
+
+    .h-3 {
+      height: 12px;
+    }
+
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .border-b {
+      border-bottom: 1px solid;
+    }
+
+    .font-semibold {
+      font-weight: var(--font-semibold);
+    }
   </style>
 </head>
+
 <body>
   <div class="app">
     <!-- ===== Sidebar Navigation (Desktop) ===== -->
@@ -184,74 +221,82 @@
       <div class="sidebar-header">
         <div class="sidebar-logo">
           <div class="sidebar-logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-              <polyline points="16 7 22 7 22 13"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+              <polyline points="16 7 22 7 22 13" />
             </svg>
           </div>
           <span class="sidebar-logo-text">Momo<span>Stocks</span></span>
         </div>
       </div>
-      
+
       <nav class="sidebar-nav">
         <div class="nav-item active" data-screen="dashboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="9"/>
-            <rect x="14" y="3" width="7" height="5"/>
-            <rect x="14" y="12" width="7" height="9"/>
-            <rect x="3" y="16" width="7" height="5"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9" />
+            <rect x="14" y="3" width="7" height="5" />
+            <rect x="14" y="12" width="7" height="9" />
+            <rect x="3" y="16" width="7" height="5" />
           </svg>
           <span class="nav-item-label">Dashboard</span>
         </div>
-        
+
         <div class="nav-item" data-screen="market">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-            <polyline points="16 7 22 7 22 13"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+            <polyline points="16 7 22 7 22 13" />
           </svg>
           <span class="nav-item-label">Market</span>
         </div>
-        
+
         <div class="nav-item" data-screen="portfolio">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-            <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+            <path d="M22 12A10 10 0 0 0 12 2v10z" />
           </svg>
           <span class="nav-item-label">Portfolio</span>
         </div>
-        
+
         <div class="nav-item" data-screen="trading">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="17 1 21 5 17 9"/>
-            <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-            <polyline points="7 23 3 19 7 15"/>
-            <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
           </svg>
           <span class="nav-item-label">Trading</span>
         </div>
-        
+
         <div class="nav-item" data-screen="gse-live">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2"/>
-            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2" />
+            <path
+              d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14" />
           </svg>
           <span class="nav-item-label">GSE Live</span>
         </div>
       </nav>
-      
+
       <div class="sidebar-footer">
         <div class="theme-toggle" id="theme-toggle">
           <div class="theme-toggle-label">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
             <span>Dark Mode</span>
           </div>
@@ -259,7 +304,7 @@
         </div>
       </div>
     </aside>
-    
+
     <!-- ===== Main Content ===== -->
     <main class="main">
       <!-- Header -->
@@ -267,16 +312,17 @@
         <h1 class="main-header-title" id="header-title">Dashboard</h1>
         <div class="main-header-actions">
           <button class="btn-icon" onclick="App.loadInitialData()" title="Refresh">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 4 23 10 17 10"/>
-              <polyline points="1 20 1 14 7 14"/>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
             </svg>
           </button>
           <div class="avatar">JD</div>
         </div>
       </header>
-      
+
       <!-- ===== Dashboard Screen ===== -->
       <div class="screen active" id="screen-dashboard">
         <div class="main-content">
@@ -297,7 +343,7 @@
               <canvas id="portfolio-mini-chart" style="width: 100%; height: 80px; margin-top: 16px;"></canvas>
             </div>
           </section>
-          
+
           <!-- Market Indices -->
           <section class="section">
             <div class="section-header">
@@ -320,7 +366,7 @@
               </div>
             </div>
           </section>
-          
+
           <!-- Watchlist -->
           <section class="section">
             <div class="section-header">
@@ -331,7 +377,7 @@
               <!-- Populated by JS -->
             </div>
           </section>
-          
+
           <!-- AI Insights -->
           <section class="section">
             <div class="section-header">
@@ -343,7 +389,7 @@
           </section>
         </div>
       </div>
-      
+
       <!-- ===== Market Screen ===== -->
       <div class="screen" id="screen-market">
         <div class="main-content">
@@ -354,7 +400,7 @@
             <button class="tab">Commodities</button>
             <button class="tab">Currencies</button>
           </div>
-          
+
           <!-- Summary Cards -->
           <div class="grid grid-2 mb-6">
             <div class="card" id="top-performer-card">
@@ -364,7 +410,7 @@
               <!-- Populated by JS -->
             </div>
           </div>
-          
+
           <!-- Filter Chips -->
           <div class="flex gap-2 mb-4 scroll-x">
             <button class="chip active">All</button>
@@ -374,7 +420,7 @@
             <button class="chip">Price ↓</button>
             <button class="chip">Price ↑</button>
           </div>
-          
+
           <!-- Stock List -->
           <section class="section">
             <div class="section-header">
@@ -386,7 +432,7 @@
           </section>
         </div>
       </div>
-      
+
       <!-- ===== Portfolio Screen ===== -->
       <div class="screen" id="screen-portfolio">
         <div class="main-content">
@@ -394,7 +440,7 @@
           <div class="card card-accent mb-6" id="portfolio-card">
             <!-- Populated by JS -->
           </div>
-          
+
           <div class="grid grid-2 gap-6">
             <!-- Holdings -->
             <section>
@@ -405,7 +451,7 @@
                 <!-- Populated by JS -->
               </div>
             </section>
-            
+
             <!-- Allocation -->
             <section>
               <div class="section-header">
@@ -419,7 +465,7 @@
               </div>
             </section>
           </div>
-          
+
           <!-- Transactions -->
           <section class="section mt-6">
             <div class="section-header">
@@ -436,7 +482,7 @@
           </section>
         </div>
       </div>
-      
+
       <!-- ===== Trading Screen ===== -->
       <div class="screen" id="screen-trading">
         <div class="main-content">
@@ -451,20 +497,20 @@
               </div>
             </section>
           </div>
-          
+
           <!-- Trading Panel -->
           <div id="trading-panel">
             <!-- Stock Header -->
             <div class="card mb-4 flex justify-between items-center" id="trading-stock-header">
               <!-- Populated by JS -->
             </div>
-            
+
             <!-- Trade Type Toggle -->
             <div class="trade-type-tabs">
               <button data-trade-type="buy" class="active">Buy</button>
               <button data-trade-type="sell">Sell</button>
             </div>
-            
+
             <!-- Order Form -->
             <div class="card mb-4">
               <div class="input-group mb-4">
@@ -475,7 +521,7 @@
                   <option value="stop-loss">Stop-Loss Order</option>
                 </select>
               </div>
-              
+
               <div class="grid grid-2 gap-4 mb-4">
                 <div class="input-group">
                   <label class="input-label">Quantity</label>
@@ -486,24 +532,25 @@
                   <input type="number" class="input" id="trade-price" placeholder="0.00" step="0.01">
                 </div>
               </div>
-              
-              <div class="flex justify-between items-center p-3 bg-tertiary rounded-lg" style="background-color: var(--bg-tertiary); border-radius: var(--radius-lg);">
+
+              <div class="flex justify-between items-center p-3 bg-tertiary rounded-lg"
+                style="background-color: var(--bg-tertiary); border-radius: var(--radius-lg);">
                 <span class="text-muted">Total</span>
                 <span class="text-xl font-bold text-mono" id="trade-total">GHS 0.00</span>
               </div>
             </div>
-            
+
             <!-- Order Book -->
             <div class="card mb-4">
               <h4 class="card-title mb-4">Order Book</h4>
               <canvas id="order-book-chart" style="width: 100%; height: 150px;"></canvas>
             </div>
-            
+
             <!-- AI Insight -->
             <div class="ai-insight mb-4">
               <div class="ai-insight-header">
                 <svg class="ai-insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                 </svg>
                 <span class="ai-insight-label">Trading Tip</span>
               </div>
@@ -511,7 +558,7 @@
                 Consider setting a stop-loss order to protect your investment from significant downturns.
               </p>
             </div>
-            
+
             <!-- Submit Button -->
             <button class="btn btn-lg btn-full btn-success" id="submit-trade">
               Place Buy Order
@@ -519,105 +566,211 @@
           </div>
         </div>
       </div>
-      
+
       <!-- ===== GSE Live Screen ===== -->
       <div class="screen" id="screen-gse-live">
         <div class="main-content">
-          <!-- Market Status -->
-          <div id="market-status" class="mb-6">
+          <!-- Market Status Banner -->
+          <div id="market-status" class="mb-4">
             <!-- Populated by JS -->
           </div>
-          
+
           <!-- Stats Grid -->
           <div class="stats-grid mb-6" id="live-stats">
             <!-- Populated by JS -->
           </div>
-          
-          <div class="grid grid-2 gap-6">
-            <!-- Top Gainers -->
-            <section>
-              <div class="section-header">
-                <h3 class="section-title">Top Gainers</h3>
-                <span class="badge badge-success">↑</span>
+
+          <!-- View Header with Toggle and Search -->
+          <div class="view-header">
+            <div class="view-header-left">
+              <div class="view-mode-toggle" id="view-mode-toggle">
+                <button class="view-mode-btn active" data-view="table">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </svg>
+                  Table
+                </button>
+                <button class="view-mode-btn" data-view="grid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                  Grid
+                </button>
+                <button class="view-mode-btn" data-view="heatmap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <rect x="7" y="7" width="3" height="9" fill="currentColor" opacity="0.5" />
+                    <rect x="12" y="5" width="3" height="11" fill="currentColor" opacity="0.7" />
+                    <rect x="17" y="8" width="3" height="8" fill="currentColor" opacity="0.9" />
+                  </svg>
+                  Heatmap
+                </button>
               </div>
-              <div class="stock-list" id="top-gainers">
-                <!-- Populated by JS -->
+            </div>
+            <div class="view-header-right">
+              <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" id="stock-search" placeholder="Search stocks...">
               </div>
-            </section>
-            
-            <!-- Top Losers -->
-            <section>
-              <div class="section-header">
-                <h3 class="section-title">Top Losers</h3>
-                <span class="badge badge-error">↓</span>
+              <span class="text-sm text-muted" id="stock-count">0 stocks</span>
+            </div>
+          </div>
+
+          <!-- Main Grid: Content + Sidebar -->
+          <div class="gse-live-grid">
+            <!-- Main Content Area -->
+            <div class="gse-live-main">
+              <!-- Table View -->
+              <div id="view-table" class="view-content">
+                <div class="stock-table-container">
+                  <table class="stock-table" id="stock-table">
+                    <thead>
+                      <tr>
+                        <th data-sort="symbol">Symbol <span class="sort-icon">↕</span></th>
+                        <th data-sort="name">Name <span class="sort-icon">↕</span></th>
+                        <th data-sort="price">Price <span class="sort-icon">↕</span></th>
+                        <th data-sort="change">Change <span class="sort-icon">↕</span></th>
+                        <th data-sort="changePercent">% Change <span class="sort-icon">↕</span></th>
+                        <th data-sort="volume">Volume <span class="sort-icon">↕</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="stock-table-body">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div class="stock-list" id="top-losers">
-                <!-- Populated by JS -->
+
+              <!-- Grid View -->
+              <div id="view-grid" class="view-content" style="display: none;">
+                <div class="stock-grid" id="stock-grid">
+                  <!-- Populated by JS -->
+                </div>
               </div>
-            </section>
+
+              <!-- Heatmap View -->
+              <div id="view-heatmap" class="view-content" style="display: none;">
+                <!-- Color Legend -->
+                <div class="heatmap-legend">
+                  <span>-5%</span>
+                  <div class="heatmap-legend-bar">
+                    <div class="segment" style="background: #7f1d1d;"></div>
+                    <div class="segment" style="background: #991b1b;"></div>
+                    <div class="segment" style="background: #b91c1c;"></div>
+                    <div class="segment" style="background: #dc2626;"></div>
+                    <div class="segment" style="background: #ef4444;"></div>
+                    <div class="segment" style="background: #4B5563;"></div>
+                    <div class="segment" style="background: #22c55e;"></div>
+                    <div class="segment" style="background: #16a34a;"></div>
+                    <div class="segment" style="background: #15803d;"></div>
+                    <div class="segment" style="background: #166534;"></div>
+                    <div class="segment" style="background: #14532d;"></div>
+                  </div>
+                  <span>+5%</span>
+                </div>
+                <div class="heatmap-container">
+                  <canvas id="heatmap-canvas"></canvas>
+                  <div class="heatmap-tooltip" id="heatmap-tooltip"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar: Gainers and Losers -->
+            <div class="gse-live-sidebar">
+              <!-- Top Gainers -->
+              <div class="sidebar-list">
+                <div class="sidebar-list-header">
+                  <span>Top Gainers</span>
+                  <span class="badge badge-success">↑</span>
+                </div>
+                <div id="sidebar-gainers">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <!-- Top Losers -->
+              <div class="sidebar-list">
+                <div class="sidebar-list-header">
+                  <span>Top Losers</span>
+                  <span class="badge badge-error">↓</span>
+                </div>
+                <div id="sidebar-losers">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </main>
-    
+
     <!-- ===== Bottom Navigation (Mobile) ===== -->
     <nav class="bottom-nav">
       <div class="bottom-nav-inner">
         <div class="bottom-nav-item active" data-screen="dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="9"/>
-            <rect x="14" y="3" width="7" height="5"/>
-            <rect x="14" y="12" width="7" height="9"/>
-            <rect x="3" y="16" width="7" height="5"/>
+            <rect x="3" y="3" width="7" height="9" />
+            <rect x="14" y="3" width="7" height="5" />
+            <rect x="14" y="12" width="7" height="9" />
+            <rect x="3" y="16" width="7" height="5" />
           </svg>
           <span>Dashboard</span>
         </div>
-        
+
         <div class="bottom-nav-item" data-screen="market">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-            <polyline points="16 7 22 7 22 13"/>
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+            <polyline points="16 7 22 7 22 13" />
           </svg>
           <span>Market</span>
         </div>
-        
+
         <div class="bottom-nav-item" data-screen="portfolio">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-            <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+            <path d="M22 12A10 10 0 0 0 12 2v10z" />
           </svg>
           <span>Portfolio</span>
         </div>
-        
+
         <div class="bottom-nav-item" data-screen="trading">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="17 1 21 5 17 9"/>
-            <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-            <polyline points="7 23 3 19 7 15"/>
-            <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
           </svg>
           <span>Trade</span>
         </div>
-        
+
         <div class="bottom-nav-item" data-screen="gse-live">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="2"/>
-            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+            <circle cx="12" cy="12" r="2" />
+            <path
+              d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14" />
           </svg>
           <span>Live</span>
         </div>
       </div>
     </nav>
   </div>
-  
+
   <!-- ===== Stock Detail Modal ===== -->
   <div class="modal" id="stock-detail-modal">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
       <button class="modal-close" data-close-modal>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       </button>
       <div id="stock-detail-content">
@@ -625,10 +778,10 @@
       </div>
     </div>
   </div>
-  
+
   <!-- ===== Toast Container ===== -->
   <div id="toast-container"></div>
-  
+
   <!-- ===== Scripts ===== -->
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
@@ -636,4 +789,5 @@
   <script src="js/charts.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>
