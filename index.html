@@ -379,13 +379,13 @@
           </div>
 
           <!-- Filter Chips -->
-          <div class="flex gap-2 mb-4 scroll-x">
-            <button class="chip active">All</button>
-            <button class="chip">Gainers</button>
-            <button class="chip">Losers</button>
-            <button class="chip">Most Active</button>
-            <button class="chip">Price ↓</button>
-            <button class="chip">Price ↑</button>
+          <div class="flex gap-2 mb-4 scroll-x" id="market-filters">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="gainers">Gainers</button>
+            <button class="chip" data-filter="losers">Losers</button>
+            <button class="chip" data-filter="active">Most Active</button>
+            <button class="chip" data-filter="price-desc">Price ↓</button>
+            <button class="chip" data-filter="price-asc">Price ↑</button>
           </div>
 
           <!-- Stock List -->

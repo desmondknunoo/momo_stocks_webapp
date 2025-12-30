@@ -102,6 +102,27 @@ const App = {
         if (screen) this.navigateTo(screen);
       });
     });
+
+    // Market Filters
+    const filterContainer = document.getElementById('market-filters');
+    if (filterContainer) {
+      filterContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-filter]');
+        if (btn) {
+          const filter = btn.dataset.filter;
+          Store.setMarketFilter(filter);
+
+          // Update active state
+          filterContainer.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Re-render market list if on market screen
+          if (Store.getState().currentScreen === 'market') {
+            this.renderStockList();
+          }
+        }
+      });
+    }
   },
 
   navigateTo(screen) {
@@ -502,7 +523,45 @@ const App = {
       return;
     }
 
-    container.innerHTML = state.stocks.map(stock => this.createStockItem(stock)).join('');
+    // Filter and Sort Logic
+    let displayStocks = [...state.stocks];
+    const filter = state.marketFilter || 'all';
+
+    // Update active filter UI if needed (in case of total re-render)
+    document.querySelectorAll('#market-filters .chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+
+    switch (filter) {
+      case 'gainers':
+        displayStocks = displayStocks.filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent);
+        break;
+      case 'losers':
+        displayStocks = displayStocks.filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent);
+        break;
+      case 'active':
+        displayStocks.sort((a, b) => (b.volume || 0) - (a.volume || 0));
+        break;
+      case 'price-desc':
+        displayStocks.sort((a, b) => b.price - a.price);
+        break;
+      case 'price-asc':
+        displayStocks.sort((a, b) => a.price - b.price);
+        break;
+      // 'all' default - usually alphabetical or as received
+    }
+
+    if (displayStocks.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+           <p class="text-muted">No stocks match your filter.</p>
+           <button class="btn btn-sm btn-neutral mt-2" onclick="Store.setMarketFilter('all'); App.renderStockList()">Clear Filter</button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = displayStocks.map(stock => this.createStockItem(stock)).join('');
   },
 
   createStockItem(stock) {

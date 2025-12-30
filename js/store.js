@@ -16,6 +16,7 @@ const initialState = {
     // UI State
     theme: 'dark',
     currentScreen: 'dashboard',
+    marketFilter: 'all', // all, gainers, losers, active, price-desc, price-asc
     isLoading: false,
     error: null,
 
@@ -113,6 +114,10 @@ const Store = {
 
     setSelectedStock(stock) {
         this.setState({ selectedStock: stock });
+    },
+
+    setMarketFilter(filter) {
+        this.setState({ marketFilter: filter });
     },
 
     getStockBySymbol(symbol) {
