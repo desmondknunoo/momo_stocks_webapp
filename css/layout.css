@@ -326,6 +326,57 @@
   margin-top: var(--space-1);
 }
 
+/* ===== Dashboard Grid (Responsive 2-column) ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+/* ===== Index Cards (Horizontal scroll) ===== */
+.index-card {
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .index-card {
+    min-width: 140px;
+  }
+}
+
+/* ===== Portfolio Value Card Mobile ===== */
+@media (max-width: 768px) {
+  .text-4xl {
+    font-size: var(--text-2xl) !important;
+  }
+  
+  .text-3xl {
+    font-size: var(--text-xl) !important;
+  }
+  
+  .portfolio-change {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .text-4xl {
+    font-size: var(--text-xl) !important;
+  }
+  
+  .text-2xl {
+    font-size: var(--text-lg) !important;
+  }
+}
+
 /* ===== Responsive Design ===== */
 
 /* Tablet and below */
@@ -396,9 +447,18 @@
     padding: var(--space-4);
   }
   
-  /* Scroll container */
+  /* Scroll container - wrap on mobile/vertical stack */
   .scroll-x {
+    flex-wrap: wrap;
+    overflow-x: visible;
     gap: var(--space-3);
+  }
+  
+  /* Index cards stack vertically on mobile */
+  .index-card {
+    min-width: 0;
+    width: 100%;
+    flex: 1 1 100%;
   }
   
   /* Section spacing */
@@ -406,17 +466,38 @@
     margin-bottom: var(--space-6);
   }
   
-  /* Bottom nav items */
+  /* Bottom nav spacing fix */
+  .bottom-nav {
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+  
   .bottom-nav-item {
-    padding: var(--space-2) var(--space-1);
+    padding: var(--space-2) 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: none;
+    min-width: 0;
   }
   
   .bottom-nav-item i {
     font-size: 20px;
+    margin-bottom: 3px;
+    display: block;
   }
   
   .bottom-nav-item span {
-    font-size: 10px;
+    font-size: 9px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+    display: block;
   }
 }
 
@@ -430,8 +511,9 @@
     padding: var(--space-2) var(--space-3);
   }
   
-  .main-header-title {
-    font-size: var(--text-base);
+  /* Adjust bottom nav for small screens */
+  .bottom-nav {
+    padding: 0 var(--space-2);
   }
   
   .section-header {
