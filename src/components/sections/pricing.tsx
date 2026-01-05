@@ -13,12 +13,12 @@ const partners = [
 const testimonials = [
     {
         quote: "The real-time indices and active movers table saved me hours of manual tracking. MoMo Stocks is a game changer for GSE traders.",
-        author: "Desmond K.",
+        author: "Akosua O.",
         role: "Retail Investor"
     },
     {
         quote: "Professional grade analytics with the convenience of Mobile Money. Best financial tool built for the Ghanaian market.",
-        author: "Akua B.",
+        author: "Eric T.",
         role: "Portfolio Manager"
     }
 ];
