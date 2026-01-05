@@ -1,87 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, ChevronRight } from "lucide-react";
-import { mockIndices, mockGainers, mockLosers, mockActive, MarketIndex } from "@/data/mock-market";
+import { TrendingUp, TrendingDown, ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const Sparkline = ({ data, color }: { data: number[], color: string }) => {
-    const min = Math.min(...data);
-    const max = Math.max(...data);
-    const range = max - min;
-    const width = 100;
-    const height = 30;
-    const points = data.map((d, i) => ({
-        x: (i / (data.length - 1)) * width,
-        y: height - ((d - min) / (range || 1)) * height,
-    }));
-
-    const pathData = `M ${points.map(p => `${p.x},${p.y}`).join(" L ")}`;
-
-    return (
-        <svg width={width} height={height} className="overflow-visible">
-            <motion.path
-                d={pathData}
-                fill="none"
-                stroke={color}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-            />
-        </svg>
-    );
-};
-
-const IndexCard = ({ item }: { item: MarketIndex }) => {
-    const isPositive = item.change >= 0;
-    return (
-        <motion.div
-            whileHover={{ y: -5 }}
-            className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm"
-        >
-            <div className="flex justify-between items-start mb-4">
-                <div>
-                    <p className="text-sm text-white/40 mb-1">{item.name}</p>
-                    <h3 className="text-2xl font-bold text-white">{item.value.toLocaleString()}</h3>
-                </div>
-                <div className={cn(
-                    "flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-full",
-                    isPositive ? "text-emerald-400 bg-emerald-400/10" : "text-rose-400 bg-rose-400/10"
-                )}>
-                    {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                    {isPositive ? "+" : ""}{item.changePercent}%
-                </div>
-            </div>
-            <div className="mt-4">
-                <Sparkline data={item.sparkline} color={isPositive ? "#10b981" : "#fb7185"} />
-            </div>
-        </motion.div>
-    );
-};
+interface Stock {
+    name: string;
+    price: number;
+    change: number;
+    volume: number;
+}
 
 export const MarketSnapshot = () => {
+    const [stocks, setStocks] = useState<Stock[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<"gainers" | "losers" | "active">("gainers");
 
+    useEffect(() => {
+        const fetchStocks = async () => {
+            try {
+                const response = await fetch("https://dev.kwayisi.org/apis/gse/live");
+                if (!response.ok) throw new Error("Failed to fetch market data");
+                const data: Stock[] = await response.json();
+                setStocks(data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "An error occurred");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStocks();
+    }, []);
+
     const getMovers = () => {
+        if (stocks.length === 0) return [];
+
         switch (activeTab) {
-            case "gainers": return mockGainers;
-            case "losers": return mockLosers;
-            case "active": return mockActive;
+            case "gainers":
+                return [...stocks].filter(s => s.change > 0).sort((a, b) => b.change - a.change).slice(0, 5);
+            case "losers":
+                return [...stocks].filter(s => s.change < 0).sort((a, b) => a.change - b.change).slice(0, 5);
+            case "active":
+                return [...stocks].sort((a, b) => b.volume - a.volume).slice(0, 5);
         }
     };
+
+    if (loading) {
+        return (
+            <section id="market-snapshot" className="pt-4 md:pt-12 pb-24 bg-black relative">
+                <div className="container mx-auto px-4 md:px-6 flex justify-center items-center min-h-[300px]">
+                    <Loader2 className="w-8 h-8 animate-spin text-white/40" />
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section id="market-snapshot" className="pt-4 md:pt-12 pb-24 bg-black relative">
+                <div className="container mx-auto px-4 md:px-6 flex justify-center items-center min-h-[300px]">
+                    <p className="text-white/40">Failed to load market data</p>
+                </div>
+            </section>
+        );
+    }
+
+    const movers = getMovers();
 
     return (
         <section id="market-snapshot" className="pt-4 md:pt-12 pb-24 bg-black relative">
             <div className="container mx-auto px-4 md:px-6 relative z-10">
-
-                {/* Indices Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                    {mockIndices.map((index) => (
-                        <IndexCard key={index.name} item={index} />
-                    ))}
-                </div>
 
                 {/* Movers Table */}
                 <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] overflow-hidden">
@@ -122,41 +111,47 @@ export const MarketSnapshot = () => {
                                     <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Symbol</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Price</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Change</th>
-                                    <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider hidden md:table-cell">Trend</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider hidden md:table-cell">Volume</th>
                                     <th className="px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {getMovers().map((stock) => (
-                                    <tr key={stock.symbol} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-white uppercase">{stock.symbol}</span>
-                                                <span className="text-xs text-white/40">{stock.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-white">GHS {stock.price.toFixed(2)}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={cn(
-                                                "font-medium",
-                                                stock.change >= 0 ? "text-emerald-400" : "text-rose-400"
-                                            )}>
-                                                {stock.change >= 0 ? "+" : ""}{stock.changePercent}%
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 hidden md:table-cell">
-                                            <Sparkline data={stock.sparkline} color={stock.change >= 0 ? "#10b981" : "#fb7185"} />
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <button
-                                                onClick={() => window.location.href = `/legacy/index.html?symbol=${stock.symbol}`}
-                                                className="inline-flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors"
-                                            >
-                                                Trade <ChevronRight size={14} />
-                                            </button>
+                                {movers.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="px-6 py-8 text-center text-white/40">
+                                            No {activeTab === "gainers" ? "gainers" : activeTab === "losers" ? "losers" : "active stocks"} at this time
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    movers.map((stock) => (
+                                        <tr key={stock.name} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors group">
+                                            <td className="px-6 py-4">
+                                                <span className="font-bold text-white uppercase">{stock.name}</span>
+                                            </td>
+                                            <td className="px-6 py-4 font-mono text-white">GHS {stock.price.toFixed(2)}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={cn(
+                                                    "inline-flex items-center gap-1 font-medium",
+                                                    stock.change >= 0 ? "text-emerald-400" : "text-rose-400"
+                                                )}>
+                                                    {stock.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                                    {stock.change >= 0 ? "+" : ""}{stock.change.toFixed(2)}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 hidden md:table-cell text-white/60">
+                                                {stock.volume.toLocaleString()}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <button
+                                                    onClick={() => window.location.href = `/legacy/index.html?symbol=${stock.name}`}
+                                                    className="inline-flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors"
+                                                >
+                                                    Trade <ChevronRight size={14} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
