@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="MoMo Stocks - Trade Ghana Stock Exchange stocks with Mobile Money. Real-time GSE data, portfolio tracking, and AI-powered insights.">
+  <meta name="keywords" content="Ghana Stock Exchange, GSE, stocks, trading, Mobile Money, MoMo, investment, portfolio">
+  <meta name="author" content="MoMo Stocks">
+  <title>MoMo Stocks | Ghana Stock Exchange Trading</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F7CFF'/%3E%3Cstop offset='100%25' stop-color='%236B94FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='50' font-weight='bold' fill='white' text-anchor='middle'%3eM%3C/text%3E%3C/svg%3E">
+
+  <!-- Google Fonts - Inter, Roboto, Roboto Mono (INTERFACE.md spec) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <!-- Additional Inline Styles -->
+  <style>
+    /* Toast Container */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-default);
+      box-shadow: var(--shadow-lg);
+      min-width: 280px;
+    }
+
+    .toast-success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast-error {
+      border-left: 4px solid var(--error);
+    }
+
+    .toast-info {
+      border-left: 4px solid var(--accent-purple);
+    }
+
+    .toast button {
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .toast button:hover {
+      color: var(--text-primary);
+    }
+
+    .animate-fade-out {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      position: relative;
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-default);
+      padding: var(--space-6);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: scaleIn 0.2s ease;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    /* Trading Panel */
+    #trading-panel {
+      display: none;
+    }
+
+    #trading-panel.active {
+      display: block;
+    }
+
+    #trading-stock-selector.hidden {
+      display: none;
+    }
+
+    /* Trade Type Tabs */
+    .trade-type-tabs {
+      display: flex;
+      gap: 2px;
+      background-color: var(--bg-tertiary);
+      padding: 4px;
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-4);
+    }
+
+    .trade-type-tabs button {
+      flex: 1;
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      font-weight: var(--font-semibold);
+      transition: all var(--transition-fast);
+    }
+
+    .trade-type-tabs button[data-trade-type="buy"].active {
+      background-color: var(--success);
+      color: #000;
+    }
+
+    .trade-type-tabs button[data-trade-type="sell"].active {
+      background-color: var(--error);
+      color: #fff;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .modal-content {
+        margin: 16px;
+        padding: var(--space-4);
+      }
+    }
+
+    /* Space utility */
+    .space-y-2>*+* {
+      margin-top: var(--space-2);
+    }
+
+    .space-y-3>*+* {
+      margin-top: var(--space-3);
+    }
+
+    .space-y-4>*+* {
+      margin-top: var(--space-4);
+    }
+
+    .w-3 {
+      width: 12px;
+    }
+
+    .h-3 {
+      height: 12px;
+    }
+
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .border-b {
+      border-bottom: 1px solid;
+    }
+
+    .font-semibold {
+      font-weight: var(--font-semibold);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- ===== Sidebar Overlay (Mobile) ===== -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ===== Sidebar Navigation ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Menu</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-screen="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span class="nav-item-label">Dashboard</span>
+        </div>
+
+        <div class="nav-item" data-screen="market">
+          <i class="fa-solid fa-chart-line"></i>
+          <span class="nav-item-label">Market</span>
+        </div>
+
+        <div class="nav-item" data-screen="portfolio">
+          <i class="fa-solid fa-wallet"></i>
+          <span class="nav-item-label">Portfolio</span>
+        </div>
+
+        <div class="nav-item" data-screen="trading">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span class="nav-item-label">Trading</span>
+        </div>
+
+        <div class="nav-item" data-screen="gse-live">
+          <i class="fa-solid fa-broadcast-tower"></i>
+          <span class="nav-item-label">GSE Live</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="theme-toggle" id="theme-toggle">
+          <div class="theme-toggle-label">
+            <i class="fa-solid fa-sun" id="theme-icon-sun"></i>
+            <i class="fa-solid fa-moon" id="theme-icon-moon" style="display: none;"></i>
+            <span id="theme-label">Light Mode</span>
+          </div>
+          <div class="toggle"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Main Content ===== -->
+    <main class="main">
+      <!-- Header -->
+      <header class="main-header">
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-btn" id="hamburger-btn" title="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="main-header-title" id="header-title">Dashboard</h1>
+        <div class="main-header-actions">
+          <!-- Mobile Theme Toggle -->
+          <button class="btn-icon mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle Theme">
+            <i class="fa-solid fa-sun" id="mobile-theme-icon-sun"></i>
+            <i class="fa-solid fa-moon" id="mobile-theme-icon-moon" style="display: none;"></i>
+          </button>
+          <button class="btn-icon" onclick="App.loadInitialData()" title="Refresh">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <div class="avatar" onclick="App.openModal('profile-modal')" style="cursor: pointer;">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== Dashboard Screen ===== -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="main-content">
+          <!-- Portfolio Summary -->
+          <section class="section">
+            <div class="card card-accent">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <div class="text-sm text-muted mb-1">Total Portfolio Value</div>
+                  <div class="text-4xl font-bold text-mono" id="portfolio-value">GHS 0.00</div>
+                </div>
+                <span class="badge badge-info">TODAY</span>
+              </div>
+              <div class="portfolio-change text-success" id="portfolio-change">
+                +GHS 0.00
+                <span class="badge badge-lg badge-success">+0.00%</span>
+              </div>
+              <canvas id="portfolio-mini-chart" style="width: 100%; height: 80px; margin-top: 16px;"></canvas>
+            </div>
+          </section>
+
+          <!-- Market Indices -->
+          <section class="section">
+            <div class="section-header">
+              <h3 class="section-title">Market Indices</h3>
+              <a href="#" class="section-link" onclick="App.navigateTo('market'); return false;">View All</a>
+            </div>
+            <div class="scroll-x" id="market-indices">
+              <!-- Populated by JS -->
+              <div class="index-card card">
+                <div class="skeleton skeleton-text" style="width: 60px;"></div>
+                <div class="skeleton skeleton-text" style="width: 100px; margin-top: 8px;"></div>
+              </div>
+              <div class="index-card card">
+                <div class="skeleton skeleton-text" style="width: 60px;"></div>
+                <div class="skeleton skeleton-text" style="width: 100px; margin-top: 8px;"></div>
+              </div>
+              <div class="index-card card">
+                <div class="skeleton skeleton-text" style="width: 60px;"></div>
+                <div class="skeleton skeleton-text" style="width: 100px; margin-top: 8px;"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Watchlist -->
+          <section class="section">
+            <div class="section-header">
+              <h3 class="section-title">Watchlist</h3>
+              <a href="#" class="section-link" onclick="App.navigateTo('market'); return false;">Add Stocks</a>
+            </div>
+            <div id="watchlist-container">
+              <!-- Populated by JS -->
+            </div>
+          </section>
+
+          <!-- AI Insights -->
+          <section class="section">
+            <div class="section-header">
+              <h3 class="section-title">Top News & Alerts</h3>
+            </div>
+            <div id="ai-insights">
+              <!-- Populated by JS -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===== Market Screen ===== -->
+      <div class="screen" id="screen-market">
+        <div class="main-content">
+          <!-- Summary Cards -->
+          <div class="dashboard-grid mb-6">
+            <div class="card" id="top-performer-card">
+              <!-- Populated by JS -->
+            </div>
+            <div class="card" id="gse-composite-card">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Filter Chips -->
+          <div class="flex gap-2 mb-4 scroll-x" id="market-filters">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="gainers">Gainers</button>
+            <button class="chip" data-filter="losers">Losers</button>
+            <button class="chip" data-filter="active">Most Active</button>
+            <button class="chip" data-filter="price-desc">Price ↓</button>
+            <button class="chip" data-filter="price-asc">Price ↑</button>
+          </div>
+
+          <!-- Stock List -->
+          <section class="section">
+            <div class="section-header">
+              <h3 class="section-title">All Stocks</h3>
+            </div>
+            <div class="stock-list" id="stock-list">
+              <!-- Populated by JS -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===== Portfolio Screen ===== -->
+      <div class="screen" id="screen-portfolio">
+        <div class="main-content">
+          <!-- Portfolio Card -->
+          <div class="card card-accent mb-6" id="portfolio-card">
+            <!-- Populated by JS -->
+          </div>
+
+          <div class="grid grid-2 gap-6">
+            <!-- Holdings -->
+            <section>
+              <div class="section-header">
+                <h3 class="section-title">Holdings</h3>
+              </div>
+              <div class="stock-list" id="holdings-list">
+                <!-- Populated by JS -->
+              </div>
+            </section>
+
+            <!-- Allocation -->
+            <section>
+              <div class="section-header">
+                <h3 class="section-title">Allocation</h3>
+              </div>
+              <div class="card">
+                <canvas id="allocation-chart" style="width: 100%; height: 200px;"></canvas>
+                <div id="allocation-legend" class="mt-4 space-y-2">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Transactions -->
+          <section class="section mt-6">
+            <div class="section-header">
+              <h3 class="section-title">Transaction History</h3>
+            </div>
+            <div class="tabs mb-4" style="max-width: 300px;">
+              <button class="tab active">All</button>
+              <button class="tab">Buys</button>
+              <button class="tab">Sells</button>
+            </div>
+            <div class="card" id="transactions-list">
+              <!-- Populated by JS -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===== Trading Screen ===== -->
+      <div class="screen" id="screen-trading">
+        <div class="main-content">
+          <!-- Stock Selector -->
+          <div id="trading-stock-selector">
+            <section class="section">
+              <div class="section-header">
+                <h3 class="section-title">Select a Stock to Trade</h3>
+              </div>
+              <div class="stock-list" id="trading-stock-list">
+                <!-- Populated by JS -->
+              </div>
+            </section>
+          </div>
+
+          <!-- Trading Panel -->
+          <div id="trading-panel">
+            <!-- Stock Header -->
+            <div class="card mb-4 flex justify-between items-center" id="trading-stock-header">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Trade Type Toggle -->
+            <div class="trade-type-tabs">
+              <button data-trade-type="buy" class="active">Buy</button>
+              <button data-trade-type="sell">Sell</button>
+            </div>
+
+            <!-- Order Form -->
+            <div class="card mb-4">
+              <div class="input-group mb-4">
+                <label class="input-label">Order Type</label>
+                <select class="input select">
+                  <option value="market">Market Order</option>
+                  <option value="limit">Limit Order</option>
+                  <option value="stop-loss">Stop-Loss Order</option>
+                </select>
+              </div>
+
+              <div class="grid grid-2 gap-4 mb-4">
+                <div class="input-group">
+                  <label class="input-label">Quantity</label>
+                  <input type="number" class="input" id="trade-quantity" placeholder="0" min="1">
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Price (GHS)</label>
+                  <input type="number" class="input" id="trade-price" placeholder="0.00" step="0.01">
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center p-3 bg-tertiary rounded-lg"
+                style="background-color: var(--bg-tertiary); border-radius: var(--radius-lg);">
+                <span class="text-muted">Total</span>
+                <span class="text-xl font-bold text-mono" id="trade-total">GHS 0.00</span>
+              </div>
+            </div>
+
+            <!-- Order Book -->
+            <div class="card mb-4">
+              <h4 class="card-title mb-4">Order Book</h4>
+              <canvas id="order-book-chart" style="width: 100%; height: 150px;"></canvas>
+            </div>
+
+            <!-- AI Insight -->
+            <div class="ai-insight mb-4">
+              <div class="ai-insight-header">
+                <svg class="ai-insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span class="ai-insight-label">Trading Tip</span>
+              </div>
+              <p class="ai-insight-content">
+                Consider setting a stop-loss order to protect your investment from significant downturns.
+              </p>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn btn-lg btn-full btn-success" id="submit-trade">
+              Place Buy Order
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GSE Live Screen ===== -->
+      <div class="screen" id="screen-gse-live">
+        <div class="main-content">
+          <!-- Market Status Banner -->
+          <div id="market-status" class="mb-4">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stats-grid mb-6" id="live-stats">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- View Header with Toggle and Search -->
+          <div class="view-header">
+            <div class="view-header-left">
+              <div class="view-mode-toggle" id="view-mode-toggle">
+                <button class="view-mode-btn active" data-view="table">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </svg>
+                  Table
+                </button>
+                <button class="view-mode-btn" data-view="grid">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                  Grid
+                </button>
+                <button class="view-mode-btn" data-view="heatmap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <rect x="7" y="7" width="3" height="9" fill="currentColor" opacity="0.5" />
+                    <rect x="12" y="5" width="3" height="11" fill="currentColor" opacity="0.7" />
+                    <rect x="17" y="8" width="3" height="8" fill="currentColor" opacity="0.9" />
+                  </svg>
+                  Heatmap
+                </button>
+              </div>
+            </div>
+            <div class="view-header-right">
+              <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" id="stock-search" placeholder="Search stocks...">
+              </div>
+              <span class="text-sm text-muted" id="stock-count">0 stocks</span>
+            </div>
+          </div>
+
+          <!-- Main Grid: Content + Sidebar -->
+          <div class="gse-live-grid">
+            <!-- Main Content Area -->
+            <div class="gse-live-main">
+              <!-- Table View -->
+              <div id="view-table" class="view-content">
+                <div class="stock-table-container">
+                  <table class="stock-table" id="stock-table">
+                    <thead>
+                      <tr>
+                        <th data-sort="symbol">Symbol <span class="sort-icon">↕</span></th>
+                        <th data-sort="name">Name <span class="sort-icon">↕</span></th>
+                        <th data-sort="price">Price <span class="sort-icon">↕</span></th>
+                        <th data-sort="change">Change <span class="sort-icon">↕</span></th>
+                        <th data-sort="changePercent">% Change <span class="sort-icon">↕</span></th>
+                        <th data-sort="volume">Volume <span class="sort-icon">↕</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="stock-table-body">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Grid View -->
+              <div id="view-grid" class="view-content" style="display: none;">
+                <div class="stock-grid" id="stock-grid">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <!-- Heatmap View -->
+              <div id="view-heatmap" class="view-content" style="display: none;">
+                <!-- Color Legend -->
+                <div class="heatmap-legend">
+                  <span>-5%</span>
+                  <div class="heatmap-legend-bar">
+                    <div class="segment" style="background: #7f1d1d;"></div>
+                    <div class="segment" style="background: #991b1b;"></div>
+                    <div class="segment" style="background: #b91c1c;"></div>
+                    <div class="segment" style="background: #dc2626;"></div>
+                    <div class="segment" style="background: #ef4444;"></div>
+                    <div class="segment" style="background: #4B5563;"></div>
+                    <div class="segment" style="background: #22c55e;"></div>
+                    <div class="segment" style="background: #16a34a;"></div>
+                    <div class="segment" style="background: #15803d;"></div>
+                    <div class="segment" style="background: #166534;"></div>
+                    <div class="segment" style="background: #14532d;"></div>
+                  </div>
+                  <span>+5%</span>
+                </div>
+                <div class="heatmap-container">
+                  <canvas id="heatmap-canvas"></canvas>
+                  <div class="heatmap-tooltip" id="heatmap-tooltip"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar: Gainers and Losers -->
+            <div class="gse-live-sidebar">
+              <!-- Top Gainers -->
+              <div class="sidebar-list">
+                <div class="sidebar-list-header">
+                  <span>Top Gainers</span>
+                  <span class="badge badge-success">↑</span>
+                </div>
+                <div id="sidebar-gainers">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <!-- Top Losers -->
+              <div class="sidebar-list">
+                <div class="sidebar-list-header">
+                  <span>Top Losers</span>
+                  <span class="badge badge-error">↓</span>
+                </div>
+                <div id="sidebar-losers">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ===== Stock Detail Modal ===== -->
+  <div class="modal" id="stock-detail-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div id="stock-detail-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Toast Container ===== -->
+  <div id="toast-container"></div>
+
+  <!-- ===== Profile Modal ===== -->
+  <div class="modal" id="profile-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content" style="max-width: 360px;">
+      <button class="modal-close" data-close-modal>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div style="text-align: center; padding: 20px 0;">
+        <div class="avatar avatar-xl" style="margin: 0 auto 16px; width: 80px; height: 80px; font-size: 28px;">
+          <i class="fa-solid fa-user" style="font-size: 40px;"></i>
+        </div>
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 4px;">Ama Mensah</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">username@email.com</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="App.openModal('settings-modal'); App.closeModal('profile-modal');">
+          <i class="fa-solid fa-gear"></i>
+          Settings
+        </button>
+        <button class="btn btn-error" onclick="App.handleLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Settings Modal ===== -->
+  <div class="modal" id="settings-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content" style="max-width: 400px;">
+      <button class="modal-close" data-close-modal>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 20px;">
+        <i class="fa-solid fa-gear" style="margin-right: 8px;"></i>Settings
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Theme Setting -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600;">Theme</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Switch between light and dark mode</div>
+          </div>
+          <div class="theme-toggle" id="settings-theme-toggle" style="width: auto;">
+            <div class="toggle" id="settings-toggle"></div>
+          </div>
+        </div>
+        <!-- Notifications -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600;">Notifications</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Push notifications for trades</div>
+          </div>
+          <div class="toggle active"></div>
+        </div>
+        <!-- Auto Refresh -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600;">Auto Refresh</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Refresh stock data every 30s</div>
+          </div>
+          <div class="toggle active"></div>
+        </div>
+      </div>
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-default);">
+        <button class="btn btn-primary" onclick="App.closeModal('settings-modal')" style="width: 100%;">
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===== Scripts ===== -->
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Hamburger Menu Script -->
+  <script>
+    (function () {
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const navItems = document.querySelectorAll('.sidebar .nav-item');
+
+      function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+
+      function toggleSidebar() {
+        if (sidebar.classList.contains('open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+
+      // Hamburger button click
+      hamburgerBtn.addEventListener('click', toggleSidebar);
+
+      // Close on overlay click
+      overlay.addEventListener('click', closeSidebar);
+
+      // Close sidebar when nav item is clicked (mobile)
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 1024) {
+            closeSidebar();
+          }
+        });
+      });
+
+      // Close sidebar on window resize if it becomes desktop size
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 1024) {
+          closeSidebar();
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
