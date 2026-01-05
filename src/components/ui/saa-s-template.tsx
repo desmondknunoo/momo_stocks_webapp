@@ -124,6 +124,22 @@ Navigation.displayName = "Navigation";
 
 // Hero Component
 const Hero = React.memo(() => {
+    const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const images = [
+        "/dashboard-dark-0.png",
+        "/dashboard-dark-1.png",
+        "/dashboard-dark-2.png",
+        "/dashboard-dark-3.png",
+        "/dashboard-dark-4.png"
+    ];
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [images.length]);
+
     return (
         <section
             className="relative min-h-screen flex flex-col items-center justify-start px-6 py-20 md:py-24"
@@ -158,6 +174,10 @@ const Hero = React.memo(() => {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        .dashboard-image-transition {
+          transition: opacity 1s ease-in-out;
         }
       `}</style>
 
@@ -199,10 +219,10 @@ const Hero = React.memo(() => {
                     variant="gradient"
                     size="lg"
                     className="rounded-lg flex items-center justify-center"
-                    aria-label="Get started with the template"
+                    aria-label="Go to Dashboard"
                     onClick={() => window.location.href = "/legacy/index.html"}
                 >
-                    Get started
+                    Go to Dashboard
                 </Button>
             </div>
 
@@ -223,14 +243,19 @@ const Hero = React.memo(() => {
                     />
                 </div>
 
-                <div className="relative z-10">
-                    {/* Placeholder for Dashboard Screenshot */}
-                    <img
-                        src="/dashboard-dark.png"
-                        alt="MoMo Stocks Dashboard"
-                        className="w-full h-auto rounded-lg shadow-2xl border border-gray-800"
-                        loading="eager"
-                    />
+                <div className="relative z-10 overflow-hidden rounded-lg shadow-2xl border border-gray-800">
+                    <div className="relative w-full aspect-[16/9]">
+                        {images.map((src, index) => (
+                            <img
+                                key={src}
+                                src={src}
+                                alt={`MoMo Stocks Dashboard Preview ${index + 1}`}
+                                className={`absolute inset-0 w-full h-auto dashboard-image-transition ${index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                                    }`}
+                                loading={index === 0 ? "eager" : "lazy"}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
