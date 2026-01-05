@@ -75,13 +75,6 @@ export const MarketSnapshot = () => {
     return (
         <section id="market-snapshot" className="pt-4 md:pt-12 pb-24 bg-black relative">
             <div className="container mx-auto px-4 md:px-6 relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Market Snapshot</h2>
-                    <p className="text-white/40 max-w-2xl mx-auto">
-                        Real-time performance metrics for the Ghana Stock Exchange.
-                        Make data-driven decisions with curated market insights.
-                    </p>
-                </div>
 
                 {/* Indices Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
