@@ -29,9 +29,10 @@ const Navigation = memo(() => {
                         <a href="#features" className="text-xs font-semibold uppercase tracking-widest text-white/40 hover:text-white transition-colors font-poppins">
                             Features
                         </a>
-                        <a href="#pricing" className="text-xs font-semibold uppercase tracking-widest text-white/40 hover:text-white transition-colors font-poppins">
+                        {/* TODO: Add pricing plans later */}
+                        {/* <a href="#pricing" className="text-xs font-semibold uppercase tracking-widest text-white/40 hover:text-white transition-colors font-poppins">
                             Pricing
-                        </a>
+                        </a> */}
                     </div>
 
                     <div className="hidden md:flex items-center gap-4">
@@ -62,7 +63,7 @@ const Navigation = memo(() => {
                     <div className="px-6 py-8 flex flex-col gap-6">
                         <a href="#market-snapshot" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-white/60 font-poppins">Market</a>
                         <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-white/60 font-poppins">Features</a>
-                        <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-white/60 font-poppins">Pricing</a>
+                        {/* <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-white/60 font-poppins">Pricing</a> */}
                         <hr className="border-white/10" />
                         <button className="w-full py-4 rounded-full bg-white text-black font-bold uppercase tracking-widest text-xs font-poppins" onClick={() => window.location.href = "/legacy/index.html"}>
                             Go to Dashboard
@@ -96,7 +97,7 @@ export default function LandingPage() {
 
             <SocialProof />
 
-            <PricingPlans />
+            {/* <PricingPlans /> */}
 
             <EnhancedFooter />
         </main>
