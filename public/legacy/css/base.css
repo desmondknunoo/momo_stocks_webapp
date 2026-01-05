@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* ===== Font Imports ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap');
 
 /* ===== CSS Reset ===== */
 *,
@@ -129,13 +129,13 @@ table {
 
 /* ===== Selection ===== */
 ::selection {
-  background-color: var(--accent-purple);
-  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.99);
+  color: #000000;
 }
 
 /* ===== Focus Styles ===== */
 :focus-visible {
-  outline: 2px solid var(--accent-purple);
+  outline: 2px solid rgba(255, 255, 255, 0.4);
   outline-offset: 2px;
 }
 

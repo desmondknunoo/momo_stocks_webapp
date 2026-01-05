@@ -6,13 +6,13 @@
 const Charts = {
     // Color palette
     colors: {
-        primary: '#4F7CFF',
-        primarySoft: '#6B94FF',
-        success: '#00C853',
-        error: '#FF1744',
+        primary: '#FFFFFF',
+        primarySoft: 'rgba(255, 255, 255, 0.6)',
+        success: '#10b981',
+        error: '#fb7185',
         grid: 'rgba(255, 255, 255, 0.05)',
         gridLight: 'rgba(0, 0, 0, 0.05)',
-        text: '#B3B3B3',
+        text: 'rgba(255, 255, 255, 0.6)',
         textLight: '#666666'
     },
 
@@ -210,8 +210,8 @@ const Charts = {
 
         // Color palette for sectors
         const colorPalette = [
-            '#AC71CE', '#A598F9', '#00C853', '#4ECDC4',
-            '#FFB300', '#FF6B6B', '#4FACFE', '#F093FB'
+            '#FFFFFF', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.6)', 'rgba(255, 255, 255, 0.4)',
+            'rgba(255, 255, 255, 0.2)', '#D1D5DB', '#9CA3AF', '#4B5563'
         ];
 
         let startAngle = -Math.PI / 2; // Start from top
