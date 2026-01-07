@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState, useEffect } from "react";
+import { memo, useState } from "react";
 import {
     Menu,
     X,
@@ -8,9 +8,8 @@ import {
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { MarketSnapshot } from "@/components/sections/market-snapshot";
 import { FeatureHighlights, EducationalSection } from "@/components/sections/features";
-import { SocialProof, PricingPlans } from "@/components/sections/pricing";
+import { SocialProof } from "@/components/sections/pricing";
 import { EnhancedFooter } from "@/components/sections/footer";
-import { cn } from "@/lib/utils";
 
 // Navigation Component
 const Navigation = memo(() => {

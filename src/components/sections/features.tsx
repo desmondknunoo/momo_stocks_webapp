@@ -58,13 +58,19 @@ export const FeatureHighlights = () => {
     return (
         <section id="features" className="py-24 bg-black">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center mb-16">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-16"
+                >
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">The Next Level of Analysis</h2>
                     <p className="text-white/40 max-w-2xl mx-auto">
                         Experience tools that were previously reserved for institutional investors,
                         now available at your fingertips.
                     </p>
-                </div>
+                </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {features.map((feature, idx) => (
@@ -93,7 +99,13 @@ export const EducationalSection = () => {
     return (
         <section id="education" className="py-24 bg-black border-t border-white/[0.05]">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4"
+                >
                     <div className="text-left">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Market Insights</h2>
                         <p className="text-white/40 max-w-xl">
@@ -101,10 +113,14 @@ export const EducationalSection = () => {
                             both beginners and pro traders.
                         </p>
                     </div>
-                    <button className="flex items-center gap-2 text-white font-medium hover:text-white/60 transition-colors">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-2 text-white font-medium hover:text-white/60 transition-colors"
+                    >
                         Explore Learning Center <TrendingUp size={18} />
-                    </button>
-                </div>
+                    </motion.button>
+                </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {educationalStories.map((story, idx) => (

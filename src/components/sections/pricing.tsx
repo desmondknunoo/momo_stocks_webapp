@@ -24,34 +24,63 @@ const testimonials = [
 ];
 
 export const SocialProof = () => {
+    const stats = [
+        { label: "Active Investors", value: "10,000+", delay: 0.1 },
+        { label: "Assets Tracked", value: "5,000+", delay: 0.2 },
+        { label: "Total Volume", value: "GHS 500M+", delay: 0.3 },
+        { label: "Uptime", value: "99.99%", delay: 0.4 }
+    ];
+
     return (
         <section className="py-24 bg-black border-t border-white/[0.05]">
             <div className="container mx-auto px-4 md:px-6">
                 {/* Partner Logos */}
-                <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-white/20 mb-12">
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center text-xs font-bold uppercase tracking-[0.3em] text-white/20 mb-12"
+                >
                     Trusted by Institutions & Data Partners
-                </p>
-                <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-30 grayscale hover:opacity-60 transition-opacity mb-24">
-                    {partners.map((partner) => (
-                        <div key={partner.name} className="flex items-center gap-3">
+                </motion.p>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-30 grayscale hover:opacity-60 transition-opacity mb-24"
+                >
+                    {partners.map((partner, idx) => (
+                        <motion.div
+                            key={partner.name}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: 0.1 + idx * 0.1 }}
+                            whileHover={{ scale: 1.1 }}
+                            className="flex items-center gap-3"
+                        >
                             <partner.icon size={24} className="text-white" />
                             <span className="font-bold text-white tracking-widest text-sm">{partner.name}</span>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
 
                 {/* User Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24">
-                    {[
-                        { label: "Active Investors", value: "10,000+" },
-                        { label: "Assets Tracked", value: "5,000+" },
-                        { label: "Total Volume", value: "GHS 500M+" },
-                        { label: "Uptime", value: "99.99%" }
-                    ].map((stat, idx) => (
-                        <div key={idx} className="text-center">
+                    {stats.map((stat, idx) => (
+                        <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: stat.delay }}
+                            className="text-center"
+                        >
                             <h4 className="text-3xl md:text-5xl font-bold text-white mb-2">{stat.value}</h4>
                             <p className="text-xs text-white/40 uppercase tracking-widest">{stat.label}</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
@@ -60,10 +89,12 @@ export const SocialProof = () => {
                     {testimonials.map((t, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, x: idx === 0 ? -20 : 20 }}
+                            initial={{ opacity: 0, x: idx === 0 ? -30 : 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="p-10 rounded-3xl bg-white/[0.03] border border-white/[0.08]"
+                            transition={{ duration: 0.6, delay: idx * 0.2 }}
+                            whileHover={{ y: -5 }}
+                            className="p-10 rounded-3xl bg-white/[0.03] border border-white/[0.08] hover:border-white/20 transition-all"
                         >
                             <div className="flex gap-1 text-white/40 mb-6">
                                 {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" stroke="none" />)}

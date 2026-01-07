@@ -73,7 +73,13 @@ export const MarketSnapshot = () => {
             <div className="container mx-auto px-4 md:px-6 relative z-10">
 
                 {/* Movers Table */}
-                <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] overflow-hidden">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="rounded-2xl bg-white/[0.03] border border-white/[0.08] overflow-hidden"
+                >
                     <div className="flex border-b border-white/[0.08]">
                         <button
                             onClick={() => setActiveTab("gainers")}
@@ -155,21 +161,29 @@ export const MarketSnapshot = () => {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="mt-12 text-center">
-                    <button
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="mt-12 text-center"
+                >
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => window.location.href = "/legacy/index.html"}
                         className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-all font-medium"
                     >
                         View Full Market Data <ChevronRight size={18} />
-                    </button>
-                </div>
+                    </motion.button>
+                </motion.div>
             </div>
 
             {/* Background Glows */}
             <div className="absolute top-1/4 left-0 w-96 h-96 bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
-        </section>
+        </section >
     );
 };
