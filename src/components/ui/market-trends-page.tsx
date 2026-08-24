@@ -47,14 +47,6 @@ function getMondayOfWeek(date: Date): Date {
     return d;
 }
 
-/** The Monday one week before the given Monday. */
-function getMondayBefore(monday: Date): Date {
-    const d = new Date(monday);
-    d.setUTCDate(d.getUTCDate() - 7);
-    d.setUTCHours(0, 0, 0, 0);
-    return d;
-}
-
 function toISODate(date: Date): string {
     return date.toISOString().split("T")[0];
 }
@@ -221,7 +213,7 @@ export default function MarketTrendsPage() {
                     });
                 }
 
-                if (!cancelled) {
+                if (!cancelled && w1Start && w1End && w2Start && w2End) {
                     setWeeklyChanges(changes);
                     setWeek1Range({ start: w1Start, end: w1End });
                     setWeek2Range({ start: w2Start, end: w2End });
