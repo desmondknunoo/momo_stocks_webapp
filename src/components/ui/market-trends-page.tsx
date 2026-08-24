@@ -37,6 +37,24 @@ function getFridayBefore(friday: Date): Date {
     return d;
 }
 
+/** UTC midnight of the Monday of the week containing `date`. */
+function getMondayOfWeek(date: Date): Date {
+    const d = new Date(date);
+    d.setUTCHours(0, 0, 0, 0);
+    const day = d.getUTCDay(); // Sun=0 … Mon=1 … Sat=6
+    const diff = (day - 1 + 7) % 7; // days since Monday
+    d.setUTCDate(d.getUTCDate() - diff);
+    return d;
+}
+
+/** The Monday one week before the given Monday. */
+function getMondayBefore(monday: Date): Date {
+    const d = new Date(monday);
+    d.setUTCDate(d.getUTCDate() - 7);
+    d.setUTCHours(0, 0, 0, 0);
+    return d;
+}
+
 function toISODate(date: Date): string {
     return date.toISOString().split("T")[0];
 }
@@ -68,8 +86,9 @@ export default function MarketTrendsPage() {
 
     const [availableDates, setAvailableDates] = useState<string[]>([]);
     const [weeklyChanges, setWeeklyChanges] = useState<WeeklyChange[]>([]);
-    // The two Fridays actually compared, resolved to real recorded trading dates.
-    const [weekRange, setWeekRange] = useState<{ start: string; end: string } | null>(null);
+    // The two week ranges (Mon-Fri) resolved to real recorded trading dates.
+    const [week1Range, setWeek1Range] = useState<{ start: string; end: string } | null>(null);
+    const [week2Range, setWeek2Range] = useState<{ start: string; end: string } | null>(null);
 
     const [exportStartDate, setExportStartDate] = useState("");
     const [exportEndDate, setExportEndDate] = useState("");
@@ -126,10 +145,9 @@ export default function MarketTrendsPage() {
     }, []);
 
     /**
-     * Week in Review = last Friday's closing price vs. the Friday-before-last's
-     * closing price, both read from the recorded closes in Supabase. If a Friday
-     * was a market holiday, we fall back to the nearest recorded trading day
-     * before it. Needs two distinct Fridays of data or the section stays hidden.
+     * Week in Review = two completed Mon-Fri week ranges.
+     * Compares last Friday's close vs. the Friday-before-last's close.
+     * Falls back to the two most recent recorded trading days if needed.
      */
     useEffect(() => {
         if (availableDates.length === 0) return;
@@ -137,20 +155,36 @@ export default function MarketTrendsPage() {
 
         (async () => {
             const lastFriday = getLastFriday(new Date());
-            const fridayBefore = getFridayBefore(lastFriday);
-            let endDate = closestOnOrBefore(availableDates, toISODate(lastFriday));
-            let startDate = closestOnOrBefore(availableDates, toISODate(fridayBefore));
+            const lastMonday = getMondayOfWeek(lastFriday);
+            const prevFriday = getFridayBefore(lastFriday);
+            const prevMonday = getMondayOfWeek(prevFriday);
 
-            // Until two Fridays of data exist, fall back to the two most recent
-            // recorded trading days so the section still shows real movement.
-            if (!endDate || !startDate || endDate === startDate) {
+            const week2End = closestOnOrBefore(availableDates, toISODate(lastFriday));
+            const week2Start = closestOnOrBefore(availableDates, toISODate(lastMonday));
+            const week1End = closestOnOrBefore(availableDates, toISODate(prevFriday));
+            const week1Start = closestOnOrBefore(availableDates, toISODate(prevMonday));
+
+            // Need two distinct weeks with both Mon and Fri dates.
+            let startDate = week1End;
+            let endDate = week2End;
+            let w1Start = week1Start;
+            let w1End = week1End;
+            let w2Start = week2Start;
+            let w2End = week2End;
+
+            if (!startDate || !endDate || startDate === endDate || !w1Start || !w2Start) {
                 if (availableDates.length >= 2) {
                     endDate = availableDates[availableDates.length - 1];
                     startDate = availableDates[availableDates.length - 2];
+                    w1Start = startDate;
+                    w1End = startDate;
+                    w2Start = endDate;
+                    w2End = endDate;
                 } else {
                     if (!cancelled) {
                         setWeeklyChanges([]);
-                        setWeekRange(null);
+                        setWeek1Range(null);
+                        setWeek2Range(null);
                     }
                     return;
                 }
@@ -189,12 +223,14 @@ export default function MarketTrendsPage() {
 
                 if (!cancelled) {
                     setWeeklyChanges(changes);
-                    setWeekRange({ start: startDate, end: endDate });
+                    setWeek1Range({ start: w1Start, end: w1End });
+                    setWeek2Range({ start: w2Start, end: w2End });
                 }
             } catch {
                 if (!cancelled) {
                     setWeeklyChanges([]);
-                    setWeekRange(null);
+                    setWeek1Range(null);
+                    setWeek2Range(null);
                 }
             }
         })();
@@ -214,9 +250,12 @@ export default function MarketTrendsPage() {
         .sort((a, b) => a.weeklyChangePercent - b.weeklyChangePercent)
         .slice(0, 5);
 
-    const rangeLabel = weekRange
-        ? { start: formatDateShort(weekRange.start), end: formatDateShort(weekRange.end) }
-        : { start: "", end: "" };
+    const rangeLabel = week1Range && week2Range
+        ? {
+            w1: `${formatDateShort(week1Range.start)} to ${formatDateShort(week1Range.end)}`,
+            w2: `${formatDateShort(week2Range.start)} to ${formatDateShort(week2Range.end)}`,
+        }
+        : null;
 
     const handleExport = async () => {
         setExporting(true);
@@ -238,8 +277,8 @@ export default function MarketTrendsPage() {
                 type,
                 stocks: items.map((w) => w.stock),
                 weeklyChanges: items,
-                startDate: rangeLabel.start,
-                endDate: rangeLabel.end,
+                startDate: rangeLabel?.w1 ?? "",
+                endDate: rangeLabel?.w2 ?? "",
             },
         });
     };
@@ -262,7 +301,7 @@ export default function MarketTrendsPage() {
                             </span>
                         </h1>
                         <p className="text-xl text-ink/60 max-w-2xl mx-auto leading-relaxed">
-                            Weekly winners and losers on the Ghana Stock Exchange, measured Friday close to Friday close.
+                            Weekly winners and losers on the Ghana Stock Exchange, measured week-over-week.
                         </p>
                     </motion.div>
 
@@ -337,7 +376,7 @@ export default function MarketTrendsPage() {
                                     <div>
                                         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-500">Week in Review</p>
                                         <h2 className="mt-1 text-lg font-bold text-ink">Top Gainers</h2>
-                                        <p className="text-xs text-ink/40 mt-1">{rangeLabel.start} to {rangeLabel.end}</p>
+                                        <p className="text-xs text-ink/40 mt-1">{rangeLabel?.w1} / {rangeLabel?.w2}</p>
                                     </div>
                                     <button
                                         onClick={() => openShareSheet("gainers")}
@@ -432,7 +471,7 @@ export default function MarketTrendsPage() {
                                     <div>
                                         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-rose-500">Week in Review</p>
                                         <h2 className="mt-1 text-lg font-bold text-ink">Top Losers</h2>
-                                        <p className="text-xs text-ink/40 mt-1">{rangeLabel.start} to {rangeLabel.end}</p>
+                                        <p className="text-xs text-ink/40 mt-1">{rangeLabel?.w1} / {rangeLabel?.w2}</p>
                                     </div>
                                     <button
                                         onClick={() => openShareSheet("losers")}
