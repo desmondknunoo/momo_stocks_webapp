@@ -215,8 +215,8 @@ export default function MarketTrendsPage() {
 
                 if (!cancelled && w1Start && w1End && w2Start && w2End) {
                     setWeeklyChanges(changes);
-                    setWeek1Range({ start: w1Start, end: w1End });
-                    setWeek2Range({ start: w2Start, end: w2End });
+                    setWeek1Range({ start: toISODate(prevMonday), end: toISODate(prevFriday) });
+                    setWeek2Range({ start: toISODate(lastMonday), end: toISODate(lastFriday) });
                 }
             } catch {
                 if (!cancelled) {
