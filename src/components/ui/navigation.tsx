@@ -3,7 +3,6 @@
 import { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { BrandLogo } from "@/components/ui/brand-logo";
 
 const NAV_LINK =
@@ -189,13 +188,8 @@ export const Navigation = memo(() => {
                         </a>
                     </div>
 
-                    <div className="hidden md:flex shrink-0 items-center gap-3">
-                        <ThemeToggle />
-                    </div>
-
                     {/* Mobile Toggle */}
-                    <div className="flex items-center gap-2 md:hidden">
-                        <ThemeToggle />
+                    <div className="flex items-center md:hidden">
                         <button
                             type="button"
                             className="text-ink"
